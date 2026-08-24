@@ -6,6 +6,7 @@ import { ContactCta } from "@/components/sections/ContactCta";
 import { NewsCard } from "@/components/sections/NewsCard";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
+import { CountUp } from "@/components/ui/CountUp";
 import { ImagePlaceholder } from "@/components/ui/ImagePlaceholder";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -19,7 +20,7 @@ export default async function Home() {
   return (
     <>
       {/* Hero */}
-        <section className="relative isolate text-white min-h-140 max-h-180">
+        <section className="relative isolate text-white min-h-140 max-h-180 pb-64 -mt-18 lg:-mt-28">
           <Image
             src="/images/K1600_Laptop_01.22.jpg"
             alt=""
@@ -33,7 +34,7 @@ export default async function Home() {
             aria-hidden
             className="absolute -top-24 -right-16 size-80 rounded-full bg-accent-500/25 blur-3xl"
           />
-          <Container className="relative grid gap-12 py-20 lg:grid-cols-[1.1fr_1fr] lg:items-center lg:py-28">
+          <Container className="relative grid gap-12 py-20 lg:grid-cols-[1.1fr_1fr] lg:items-center lg:py-36">
             <div>
               <span className="inline-flex items-center gap-2 text-xs font-semibold tracking-[0.18em] text-accent-300 uppercase">
                 <span aria-hidden className="h-px w-6 bg-accent-300" />
@@ -71,7 +72,7 @@ export default async function Home() {
             ].map((fact) => (
               <div key={fact.label} className="text-center">
                 <p className="font-display text-3xl font-bold text-brand-800 sm:text-4xl">
-                  {fact.value}
+                  <CountUp value={fact.value} />
                 </p>
                 <p className="mt-1 text-xs font-medium tracking-wide text-brand-500 uppercase">
                   {fact.label}

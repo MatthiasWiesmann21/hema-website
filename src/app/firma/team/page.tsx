@@ -21,6 +21,8 @@ export default function TeamPage() {
         title="wir sind hema"
         description="Ein Team aus Spezialistinnen und Spezialisten – mit klaren Zuständigkeiten und kurzen Wegen."
         breadcrumb={[{ label: "Team", href: "/firma/team" }]}
+        bgImage="/images/Business-1697x1080.png"
+        className="py-24 sm:py-32 lg:py-40"
       />
 
       <Section>
@@ -30,7 +32,7 @@ export default function TeamPage() {
           description="Sie wissen jederzeit, wer bei Ihrem Thema für Sie zuständig ist."
         />
 
-        <ul className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {team.map((member) => (
             <li
               key={member.name}

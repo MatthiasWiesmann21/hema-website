@@ -24,12 +24,15 @@ export function Header() {
 
   const closeMenu = () => setOpen(false);
 
+  const isHome = pathname === "/";
+  const transparent = isHome && !scrolled;
+
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
 
   return (
     <header className="sticky top-0 z-50">
-      <div className="hidden bg-brand-900 text-white lg:block">
+      <div className={cn("hidden text-white lg:block transition-colors", transparent ? "bg-transparent" : "bg-brand-900")}>
         <Container className="flex h-10 items-center justify-between text-xs">
           <div className="flex items-center gap-6">
             {locations.slice(0, 2).map((location) => (
@@ -59,8 +62,10 @@ export function Header() {
 
       <div
         className={cn(
-          "border-b bg-white/90 backdrop-blur-md transition-shadow",
-          scrolled ? "border-brand-100 shadow-sm" : "border-transparent",
+          "border-b transition-all",
+          transparent
+            ? "border-transparent bg-transparent"
+            : "border-brand-100 bg-white/90 shadow-sm backdrop-blur-md",
         )}
       >
         <Container className="flex h-18 items-center justify-between gap-4">
@@ -75,7 +80,12 @@ export function Header() {
                       href={item.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex h-10 items-center rounded-full px-4 text-sm font-medium tracking-wide text-brand-900/80 uppercase transition-colors hover:text-accent-500"
+                      className={cn(
+                        "flex h-10 items-center rounded-full px-4 text-sm font-medium tracking-wide uppercase transition-colors",
+                        transparent
+                          ? "text-white/90 hover:text-white"
+                          : "text-brand-900/80 hover:text-accent-500",
+                      )}
                     >
                       {item.label}
                     </a>
@@ -86,7 +96,9 @@ export function Header() {
                         "flex h-10 items-center gap-1.5 rounded-full px-4 text-sm font-medium tracking-wide uppercase transition-colors",
                         isActive(item.href)
                           ? "text-accent-500"
-                          : "text-brand-900/80 hover:text-accent-500",
+                          : transparent
+                            ? "text-white/90 hover:text-white"
+                            : "text-brand-900/80 hover:text-accent-500",
                       )}
                     >
                       {item.label}
@@ -144,7 +156,10 @@ export function Header() {
             onClick={() => setOpen((value) => !value)}
             aria-expanded={open}
             aria-label={open ? "Menü schliessen" : "Menü öffnen"}
-            className="flex size-11 items-center justify-center rounded-xl border border-brand-200 text-brand-800 lg:hidden"
+            className={cn(
+              "flex size-11 items-center justify-center rounded-xl border transition-colors lg:hidden",
+              transparent ? "border-white/30 text-white" : "border-brand-200 text-brand-800",
+            )}
           >
             <svg
               aria-hidden

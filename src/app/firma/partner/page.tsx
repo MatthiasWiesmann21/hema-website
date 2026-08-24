@@ -31,39 +31,43 @@ export default function PartnerPage() {
           description="Als Synology Gold Partner und zertifizierter Partner weiterer Hersteller haben wir direkten Zugang zu Support, Know-how und Ressourcen."
         />
 
-        <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {partners.map((partner) => (
             <li key={partner.name}>
               <a
                 href={partner.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex h-full items-center gap-5 rounded-2xl border border-brand-100 bg-white p-6 shadow-card transition-all hover:border-brand-200 hover:shadow-card-hover"
+                className="group flex h-full flex-col rounded-2xl border border-brand-100 bg-white shadow-card transition-all hover:border-brand-200 hover:shadow-card-hover"
               >
-                <span className="flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-brand-50">
+                <span className="relative flex h-56 items-center justify-center overflow-hidden rounded-t-2xl bg-white">
                   {partner.logo ? (
-                    <Image
-                      src={partner.logo}
-                      alt={partner.name}
-                      width={64}
-                      height={64}
-                      className="size-full object-contain p-2"
-                    />
+                    <span className="relative size-full p-2">
+                      <Image
+                        src={partner.logo}
+                        alt={partner.name}
+                        fill
+                        sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                        className="object-contain"
+                      />
+                    </span>
                   ) : (
-                    <span className="font-display text-lg font-bold text-brand-700">
+                    <span className="font-display text-2xl font-bold text-brand-700">
                       {partner.name.slice(0, 2).toUpperCase()}
                     </span>
                   )}
                 </span>
-                <span className="flex flex-col gap-1">
-                  <span className="text-base font-semibold">
-                    {partner.name}
+                <span className="flex flex-1 items-center justify-between gap-3 border-t border-brand-100 p-5">
+                  <span className="flex flex-col gap-1">
+                    <span className="text-base font-semibold">
+                      {partner.name}
+                    </span>
+                    <span className="text-sm text-brand-950/60">
+                      {partner.category}
+                    </span>
                   </span>
-                  <span className="text-sm text-brand-950/60">
-                    {partner.category}
-                  </span>
+                  <ArrowRightIcon className="size-5 shrink-0 text-brand-300 transition-all group-hover:translate-x-1 group-hover:text-accent-500" />
                 </span>
-                <ArrowRightIcon className="ml-auto size-5 text-brand-300 transition-all group-hover:translate-x-1 group-hover:text-accent-500" />
               </a>
             </li>
           ))}

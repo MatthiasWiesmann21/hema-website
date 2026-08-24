@@ -4,18 +4,22 @@ import Link from "next/link";
 import { Container } from "@/components/ui/Container";
 import { Eyebrow } from "@/components/ui/SectionHeading";
 
+import { cn } from "@/lib/utils";
+
 export function PageHero({
   eyebrow,
   title,
   description,
   breadcrumb,
   bgImage,
+  className,
 }: {
   eyebrow?: string;
   title: string;
   description?: string;
   breadcrumb?: { label: string; href: string }[];
   bgImage?: string;
+  className?: string;
 }) {
   return (
     <section className="relative isolate overflow-hidden bg-linear-to-br from-brand-900 via-brand-800 to-brand-950 text-white">
@@ -36,7 +40,7 @@ export function PageHero({
         aria-hidden
         className="absolute -top-24 -right-16 size-80 rounded-full bg-accent-500/25 blur-3xl"
       />
-      <Container className="relative py-16 sm:py-20 lg:py-24">
+      <Container className={cn("relative py-16 sm:py-20 lg:py-24", className)}>
         {breadcrumb?.length ? (
           <nav aria-label="Brotkrumen" className="mb-6 text-xs text-white/55">
             <ol className="flex flex-wrap items-center gap-2">

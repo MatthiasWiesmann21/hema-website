@@ -91,6 +91,16 @@ export default function KontaktPage() {
                 </div>
               </dl>
 
+              <div className="overflow-hidden rounded-xl border border-brand-100">
+                <iframe
+                  title={`Karte – ${location.city}`}
+                  src={`https://www.google.com/maps?q=${encodeURIComponent(location.mapQuery)}&output=embed`}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  className="h-48 w-full border-0"
+                />
+              </div>
+
               <div className="mt-auto flex flex-wrap gap-3 pt-2">
                 <Button href={location.phoneHref} size="sm">
                   Anrufen
