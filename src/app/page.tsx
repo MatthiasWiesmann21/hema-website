@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 import { ArrowRightIcon, BackupIcon, serviceIcons } from "@/components/icons";
@@ -18,7 +19,15 @@ export default async function Home() {
   return (
     <>
       {/* Hero */}
-        <section className="relative isolate overflow-hidden bg-linear-to-br from-brand-900 via-brand-800 to-brand-950 text-white">
+        <section className="relative isolate text-white min-h-140 max-h-180">
+          <Image
+            src="/images/K1600_Laptop_01.22.jpg"
+            alt=""
+            fill
+            priority
+            className="object-cover"
+          />
+          <div aria-hidden className="absolute inset-0 bg-black/10" />
           <div aria-hidden className="absolute inset-0 bg-grid opacity-40" />
           <div
             aria-hidden
@@ -48,13 +57,6 @@ export default async function Home() {
                 </Button>
               </div>
             </div>
-            <ImagePlaceholder
-              label="Hero-Bild: IT & Netzwerk"
-              aspect="4/3"
-              tone="accent"
-              className="shadow-2xl"
-              priority
-            />
           </Container>
         </section>
 
@@ -167,7 +169,17 @@ export default async function Home() {
         {/* We are hiring banner */}
         <Section tone="brand" className="py-0">
           <div className="-mx-5 sm:-mx-8">
-            <div className="relative isolate overflow-hidden bg-linear-to-r from-accent-600 via-accent-500 to-brand-800 px-6 py-12 sm:px-12 sm:py-16">
+            <div className="relative isolate overflow-hidden px-6 py-12 sm:px-12 sm:py-16">
+              <Image
+                src="/images/Schwyz.png"
+                alt=""
+                fill
+                className="object-cover"
+              />
+              <div
+                aria-hidden
+                className="absolute inset-0 bg-linear-to-r from-accent-600/80 via-accent-500/70 to-brand-800/80"
+              />
               <div
                 aria-hidden
                 className="absolute -bottom-20 -right-10 size-72 rounded-full bg-white/10 blur-3xl"

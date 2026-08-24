@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 import { Container } from "@/components/ui/Container";
@@ -8,14 +9,28 @@ export function PageHero({
   title,
   description,
   breadcrumb,
+  bgImage,
 }: {
   eyebrow?: string;
   title: string;
   description?: string;
   breadcrumb?: { label: string; href: string }[];
+  bgImage?: string;
 }) {
   return (
     <section className="relative isolate overflow-hidden bg-linear-to-br from-brand-900 via-brand-800 to-brand-950 text-white">
+      {bgImage ? (
+        <>
+          <Image
+            src={bgImage}
+            alt=""
+            fill
+            priority
+            className="object-cover"
+          />
+          <div aria-hidden className="absolute inset-0 bg-linear-to-br from-brand-900/80 via-brand-800/70 to-brand-950/90" />
+        </>
+      ) : null}
       <div aria-hidden className="absolute inset-0 bg-grid opacity-40" />
       <div
         aria-hidden

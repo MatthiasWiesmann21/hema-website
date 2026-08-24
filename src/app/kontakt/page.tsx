@@ -22,6 +22,7 @@ export default function KontaktPage() {
         title="Wir sind für Sie da"
         description="Drei Standorte in der Region – rufen Sie an oder schreiben Sie uns eine E-Mail. Wir melden uns rasch zurück."
         breadcrumb={[{ label: "Kontakt", href: "/kontakt" }]}
+        bgImage="/images/Schwyz.png"
       />
 
       <Section>

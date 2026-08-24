@@ -83,7 +83,11 @@ export const mainNav: NavItem[] = [
     ],
   },
   { label: "Kontakt", href: "/kontakt" },
-  { label: "Support", href: "/support" },
+  {
+    label: "Support",
+    href: "https://lb3.pcvisit.de/v1/hosted/jumplink?func=download&topic=guestSetup&destname=pcvisit_Kunden-Modul&os=osWin32",
+    external: true,
+  },
 ];
 
 export type RemoteTool = {
