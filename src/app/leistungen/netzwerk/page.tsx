@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import { BackupIcon, NetworkIcon, ShieldIcon } from "@/components/icons";
 import { PageHero } from "@/components/layout/PageHero";
+import { BackupStatsCarousel } from "@/components/sections/BackupStatsCarousel";
 import { ContactCta } from "@/components/sections/ContactCta";
 import { BulletList } from "@/components/ui/BulletList";
 import { Card } from "@/components/ui/Card";
@@ -31,6 +32,8 @@ export default function NetzwerkPage() {
         title="Netzwerk"
         description="Die unmittelbare Verfügbarkeit von Informationen ist längst zum bedeutenden Wettbewerbsfaktor geworden."
         breadcrumb={[{ label: "Leistungen", href: "/leistungen" }]}
+        bgImage="/images/ZyxelRouter_before_Switch.jpg"
+        className="py-28 sm:py-36 lg:py-44"
       />
 
       <Section>
@@ -68,6 +71,7 @@ export default function NetzwerkPage() {
 
           <div className="flex flex-col gap-6">
             <ImagePlaceholder
+              src="/images/Netzwerk_Switch.jpg"
               label="Netzwerkinfrastruktur / Serverraum"
               aspect="4/3"
               tone="brand"
@@ -113,29 +117,9 @@ export default function NetzwerkPage() {
             </div>
           </div>
 
-          <Card className="p-7">
-            <p className="text-xs font-semibold tracking-[0.16em] text-brand-500 uppercase">
-              Ursachen für Datenverlust
-            </p>
-            <ul className="mt-6 flex flex-col gap-5">
-              {dataLossCauses.map((cause) => (
-                <li key={cause.label}>
-                  <div className="flex items-baseline justify-between gap-4">
-                    <span className="text-sm font-medium">{cause.label}</span>
-                    <span className="font-display text-sm font-bold text-brand-800">
-                      {cause.value}
-                    </span>
-                  </div>
-                  <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-brand-100">
-                    <div
-                      className="h-full rounded-full bg-accent-500"
-                      style={{ width: cause.value }}
-                    />
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </Card>
+          <div className="flex flex-col gap-6">
+            <BackupStatsCarousel causes={dataLossCauses} />
+          </div>
         </div>
       </Section>
 

@@ -13,7 +13,6 @@ import {
 import { PageHero } from "@/components/layout/PageHero";
 import { ContactCta } from "@/components/sections/ContactCta";
 import { Card, FeatureCard } from "@/components/ui/Card";
-import { ImagePlaceholder } from "@/components/ui/ImagePlaceholder";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 
@@ -82,6 +81,8 @@ export default function UeberwachungPage() {
         title="Überwachung"
         description="Videoüberwachung, die abschreckt, dokumentiert und Sicherheit schafft – jederzeit und von überall abrufbar."
         breadcrumb={[{ label: "Leistungen", href: "/leistungen" }]}
+        bgImage="/images/mobotix.jpg"
+        className="py-28 sm:py-36 lg:py-44"
       />
 
       <Section>
@@ -101,20 +102,11 @@ export default function UeberwachungPage() {
       </Section>
 
       <Section tone="muted">
-        <div className="grid items-center gap-12 lg:grid-cols-[1fr_1.1fr]">
-          <ImagePlaceholder
-            label="Videoüberwachung / Kamera"
-            aspect="4/3"
-            tone="brand"
-          />
-          <div>
-            <SectionHeading
-              eyebrow="Möglichkeiten"
-              title="Wofür Sie Kameras einsetzen können"
-              description="Ob Sicherheit, Dokumentation oder Marketing: Wir planen die passende Lösung und richten den mobilen Zugriff ein."
-            />
-          </div>
-        </div>
+        <SectionHeading
+          eyebrow="Möglichkeiten"
+          title="Wofür Sie Kameras einsetzen können"
+          description="Ob Sicherheit, Dokumentation oder Marketing: Wir planen die passende Lösung und richten den mobilen Zugriff ein."
+        />
 
         <ul className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {useCases.map((useCase) => (

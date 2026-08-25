@@ -22,6 +22,8 @@ export default function PartnerPage() {
         title="Unsere Partner"
         description="Wir arbeiten mit technologisch führenden Herstellern und Anbietern zusammen – zertifiziert und langjährig erprobt."
         breadcrumb={[{ label: "Partner", href: "/firma/partner" }]}
+        bgImage="/images/Partner/Partner-1583x1080.jpg"
+        className="py-28 sm:py-36 lg:py-44"
       />
 
       <Section>

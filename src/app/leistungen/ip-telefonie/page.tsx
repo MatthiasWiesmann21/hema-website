@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 
 import { CloudIcon, PhoneIcon } from "@/components/icons";
 import { PageHero } from "@/components/layout/PageHero";
 import { ContactCta } from "@/components/sections/ContactCta";
 import { BulletList } from "@/components/ui/BulletList";
-import { ImagePlaceholder } from "@/components/ui/ImagePlaceholder";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 
@@ -44,6 +44,8 @@ export default function IpTelefoniePage() {
         title="IP-Telefonie"
         description="Vergessen Sie Ihre alte Telefonanlage – moderne Kommunikation läuft über Software."
         breadcrumb={[{ label: "Leistungen", href: "/leistungen" }]}
+        bgImage="/images/hema_tel.png"
+        className="py-28 sm:py-36 lg:py-44"
       />
 
       <Section>
@@ -78,23 +80,29 @@ export default function IpTelefoniePage() {
             </div>
           </div>
 
-          <ImagePlaceholder
-            label="IP-Telefonie / Swyx Arbeitsplatz"
-            aspect="4/3"
-            tone="brand"
-            className="lg:sticky lg:top-32"
-          />
+          <div className="relative flex aspect-video items-center justify-center overflow-hidden rounded-2xl lg:sticky">
+            <Image
+              src="/images/swyx_buehne.jpg"
+              alt="IP-Telefonie / Swyx Arbeitsplatz"
+              fill
+              sizes="(min-width: 1024px) 50vw, 100vw"
+              className="object-contain"
+            />
+          </div>
         </div>
       </Section>
 
       <Section tone="muted">
         <div className="grid items-start gap-12 lg:grid-cols-2">
-          <ImagePlaceholder
-            label="peoplefone HOSTED"
-            aspect="4/3"
-            tone="neutral"
-            className="border border-brand-100 lg:order-last"
-          />
+          <div className="relative aspect-4/3 overflow-hidden rounded-2xl border border-brand-100 bg-white lg:order-last">
+            <Image
+              src="/images/Partner/peoplefone.png"
+              alt="peoplefone HOSTED"
+              fill
+              sizes="(min-width: 1024px) 50vw, 100vw"
+              className="object-contain p-6"
+            />
+          </div>
           <div className="flex flex-col gap-6">
             <SectionHeading
               eyebrow="peoplefone HOSTED"

@@ -24,8 +24,7 @@ export function Header() {
 
   const closeMenu = () => setOpen(false);
 
-  const isHome = pathname === "/";
-  const transparent = isHome && !scrolled;
+  const transparent = !scrolled;
 
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
@@ -33,7 +32,7 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50">
       <div className={cn("hidden text-white lg:block transition-colors", transparent ? "bg-transparent" : "bg-brand-900")}>
-        <Container className="flex h-10 items-center justify-between text-xs">
+        <Container className="flex h-8 items-center justify-between text-xs">
           <div className="flex items-center gap-6">
             {locations.slice(0, 2).map((location) => (
               <span key={location.city} className="flex items-center gap-2">
@@ -68,7 +67,7 @@ export function Header() {
             : "border-brand-100 bg-white/90 shadow-sm backdrop-blur-md",
         )}
       >
-        <Container className="flex h-18 items-center justify-between gap-4">
+        <Container className="flex h-20 items-center justify-between gap-4">
           <Logo />
 
           <nav aria-label="Hauptnavigation" className="hidden lg:block">

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 
 import {
   ArrowRightIcon,
@@ -13,7 +14,6 @@ import { PageHero } from "@/components/layout/PageHero";
 import { ContactCta } from "@/components/sections/ContactCta";
 import { Button } from "@/components/ui/Button";
 import { Card, FeatureCard } from "@/components/ui/Card";
-import { ImagePlaceholder } from "@/components/ui/ImagePlaceholder";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 
@@ -92,6 +92,8 @@ export default function KmuSoftwarePage() {
         title="KMU Software"
         description="Schweizer Business Software für Schweizer KMU – digitalisiert und automatisiert Ihre Kernprozesse Schritt für Schritt."
         breadcrumb={[{ label: "Leistungen", href: "/leistungen" }]}
+        bgImage="/images/proffix.ch_pressecenter_px5_download3_300dpi-1920x1078.jpg"
+        className="py-28 sm:py-36 lg:py-44"
       />
 
       <Section>
@@ -111,12 +113,15 @@ export default function KmuSoftwarePage() {
               </Button>
             </div>
           </div>
-          <ImagePlaceholder
-            label="Proffix Px5 Screenshot"
-            aspect="4/3"
-            tone="neutral"
-            className="border border-brand-100"
-          />
+          <div className="relative aspect-4/3 overflow-hidden rounded-2xl border border-brand-100">
+            <Image
+              src="/images/proffix.ch_pressecenter_px5_berge_300dpi-scaled.jpg"
+              alt="Proffix Px5"
+              fill
+              sizes="(min-width: 1024px) 50vw, 100vw"
+              className="object-cover"
+            />
+          </div>
         </div>
       </Section>
 

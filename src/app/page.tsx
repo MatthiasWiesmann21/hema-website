@@ -7,7 +7,6 @@ import { NewsCard } from "@/components/sections/NewsCard";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { CountUp } from "@/components/ui/CountUp";
-import { ImagePlaceholder } from "@/components/ui/ImagePlaceholder";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { getAllNews } from "@/lib/news";
@@ -170,7 +169,7 @@ export default async function Home() {
         {/* We are hiring banner */}
         <Section tone="brand" className="py-0">
           <div className="-mx-5 sm:-mx-8">
-            <div className="relative isolate overflow-hidden px-6 py-12 sm:px-12 sm:py-16">
+            <div className="relative isolate overflow-hidden rounded-3xl px-6 py-12 sm:px-12 sm:py-16">
               <Image
                 src="/images/Schwyz.png"
                 alt=""

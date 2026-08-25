@@ -22,7 +22,7 @@ export function PageHero({
   className?: string;
 }) {
   return (
-    <section className="relative isolate overflow-hidden bg-linear-to-br from-brand-900 via-brand-800 to-brand-950 text-white">
+    <section className="relative isolate -mt-18 overflow-hidden bg-linear-to-br from-brand-900 via-brand-800 to-brand-950 text-white lg:-mt-28">
       {bgImage ? (
         <>
           <Image
@@ -40,7 +40,7 @@ export function PageHero({
         aria-hidden
         className="absolute -top-24 -right-16 size-80 rounded-full bg-accent-500/25 blur-3xl"
       />
-      <Container className={cn("relative py-16 sm:py-20 lg:py-24", className)}>
+      <Container className={cn("relative pt-36 pb-20 sm:pt-40 sm:pb-24 lg:pt-44 lg:pb-28", className)}>
         {breadcrumb?.length ? (
           <nav aria-label="Brotkrumen" className="mb-6 text-xs text-white/55">
             <ol className="flex flex-wrap items-center gap-2">

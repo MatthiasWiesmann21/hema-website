@@ -22,7 +22,7 @@ export default function TeamPage() {
         description="Ein Team aus Spezialistinnen und Spezialisten – mit klaren Zuständigkeiten und kurzen Wegen."
         breadcrumb={[{ label: "Team", href: "/firma/team" }]}
         bgImage="/images/Business-1697x1080.png"
-        className="py-24 sm:py-32 lg:py-40"
+        className="py-28 sm:py-36 lg:py-44"
       />
 
       <Section>

@@ -34,6 +34,8 @@ export default function FirmenprofilPage() {
         title="Firmenprofil"
         description="Kompetent und zielsicher zu einem IT-Umfeld, das Ihren Ansprüchen gerecht wird."
         breadcrumb={[{ label: "Firmenprofil", href: "/firma/firmenprofil" }]}
+        bgImage="/images/Business-1697x1080.png"
+        className="py-28 sm:py-36 lg:py-44"
       />
 
       <Section>
@@ -65,6 +67,7 @@ export default function FirmenprofilPage() {
           </div>
 
           <ImagePlaceholder
+            src="/images/hema-sitz-steinen.jpg"
             label="Team / Standort hema"
             aspect="4/3"
             tone="brand"

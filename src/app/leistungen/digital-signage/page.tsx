@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 
 import { ScreenIcon } from "@/components/icons";
 import { PageHero } from "@/components/layout/PageHero";
@@ -6,7 +7,6 @@ import { ContactCta } from "@/components/sections/ContactCta";
 import { BulletList } from "@/components/ui/BulletList";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import { ImagePlaceholder } from "@/components/ui/ImagePlaceholder";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 
@@ -25,13 +25,13 @@ const scenarios = [
   {
     question: "Sie besitzen ein Ladenlokal oder eine Boutique?",
     answer:
-      "Machen Sie auf Angebote und Neuheiten aufmerksam. Generieren Sie Mehrwert durch zusätzliche Informationen wie Rezepte oder Anwendungsmöglichkeiten.",
+      "Machen Sie auf Angebote und Neuheiten aufmerksam. Generieren Sie Mehrwert durch zusätzliche Informationen wie Rezepte, Anwendungsmöglichkeiten usw.",
   },
   {
     question:
       "Sie möchten Ihre Schule, Ihr Hotel, Ihr Restaurant oder Ihre Kantine attraktiver gestalten?",
     answer:
-      "Mit INFO screen als dynamischem Informationstool verbreiten Sie Wetter, Bus- und Zugverbindungen, Lagepläne und aktuelle Neuigkeiten.",
+      "Mit INFO screen als dynamischem Informationstool können Sie das Wetter, Bus-/Zugverbindungen, Lagepläne und aktuelle Neuigkeiten verbreiten.",
   },
   {
     question: "Sie besitzen eine Praxis oder einen Salon mit Warteraum?",
@@ -47,6 +47,8 @@ export default function DigitalSignagePage() {
         title="Digital Signage"
         description="Machen Sie mehr aus Ihrem Geschäft – mit bewegten Bildern und wechselnden Inhalten."
         breadcrumb={[{ label: "Leistungen", href: "/leistungen" }]}
+        bgImage="/images/digital_signage.jpg"
+        className="py-28 sm:py-36 lg:py-44"
       />
 
       <Section>
@@ -59,11 +61,36 @@ export default function DigitalSignagePage() {
             />
             <Button href="/kontakt">Beratung anfragen</Button>
           </div>
-          <ImagePlaceholder
-            label="Digital Signage Display"
-            aspect="4/3"
-            tone="brand"
-          />
+          <div className="relative aspect-4/3 overflow-hidden rounded-2xl border border-brand-100">
+            <Image
+              src="/images/Willkommen_small.png"
+              alt="Digital Signage Display"
+              fill
+              sizes="(min-width: 1024px) 50vw, 100vw"
+              className="object-cover"
+            />
+          </div>
+        </div>
+      </Section>
+
+      <Section>
+        <div className="grid items-center gap-12 lg:grid-cols-2">
+          <div className="relative aspect-4/3 overflow-hidden rounded-2xl border border-brand-100">
+            <Image
+              src="/images/Eingangsbereich.png"
+              alt="Eingangsbereich mit Digital Signage"
+              fill
+              sizes="(min-width: 1024px) 50vw, 100vw"
+              className="object-cover"
+            />
+          </div>
+          <div className="flex flex-col gap-6">
+            <SectionHeading
+              eyebrow="Möglichkeiten"
+              title="Vielseitig einsetzbar in jedem Eingangsbereich"
+              description="Ob Empfang, Ladenlokal, Schule oder Praxis – Digital Signage passt sich flexibel an Ihre Räumlichkeiten und Bedürfnisse an."
+            />
+          </div>
         </div>
       </Section>
 
@@ -91,7 +118,7 @@ export default function DigitalSignagePage() {
       </Section>
 
       <Section>
-        <div className="grid overflow-hidden rounded-3xl border border-brand-100 shadow-card lg:grid-cols-2">
+        <div className="grid overflow-hidden rounded-3xl border border-brand-100 shadow-card lg:grid-cols-[1.3fr_1fr]">
           <div className="flex flex-col gap-6 p-8 sm:p-12">
             <div className="flex items-center gap-3 text-brand-700">
               <ScreenIcon className="size-7" />
@@ -126,13 +153,15 @@ export default function DigitalSignagePage() {
               </Button>
             </div>
           </div>
-          <ImagePlaceholder
-            label="hema INFO screen"
-            aspect="none"
-            tone="accent"
-            rounded="rounded-none"
-            className="min-h-72 lg:min-h-full"
-          />
+          <div className="relative flex min-h-56 items-center justify-center overflow-hidden bg-brand-50 p-6 lg:min-h-full">
+            <Image
+              src="/images/Info_Screen.png"
+              alt="hema INFO screen"
+              fill
+              sizes="(min-width: 1024px) 40vw, 100vw"
+              className="object-cover"
+            />
+          </div>
         </div>
       </Section>
 
