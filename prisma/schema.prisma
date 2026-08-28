@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -26,7 +26,7 @@ model NewsPost {
   image          String?
   ctaLabel       String?
   ctaHref        String?
-  content        String    @db.LongText
+  content        String    @db.Text
   published      Boolean   @default(false)
   scheduledAt    DateTime?
   seoTitle       String?
@@ -41,9 +41,9 @@ model CustomPage {
   slug           String   @unique
   title          String
   excerpt        String?
-  content        String   @db.LongText
+  content        String   @db.Text
   format         String   @default("markdown")
-  css            String?  @db.LongText
+  css            String?  @db.Text
   published      Boolean  @default(false)
   seoTitle       String?
   seoDescription String?
@@ -57,7 +57,7 @@ model SiteSetting {
   name        String
   shortName   String
   tagline     String
-  description String   @db.LongText
+  description String   @db.Text
   email       String
   url         String
   social      Json
@@ -78,7 +78,7 @@ model Revision {
   id        String   @id @default(cuid())
   itemType  String
   itemId    String
-  content   String   @db.LongText
+  content   String   @db.Text
   author    String?
   createdAt DateTime @default(now())
 
@@ -91,7 +91,7 @@ model ContactSubmission {
   email     String
   phone     String?
   subject   String?
-  message   String   @db.LongText
+  message   String   @db.Text
   status    String   @default("new")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -136,8 +136,8 @@ model ApiConnection {
   name            String
   baseUrl         String
   authType        String   @default("none")
-  authConfig      String   @db.LongText
-  defaultHeaders  String   @db.LongText
+  authConfig      String   @db.Text
+  defaultHeaders  String   @db.Text
   active          Boolean  @default(true)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
@@ -151,7 +151,7 @@ model Workflow {
   webhookKey     String?  @unique
   cronExpression String?
   active         Boolean  @default(true)
-  steps          String   @db.LongText
+  steps          String   @db.Text
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
@@ -164,13 +164,13 @@ model WorkflowExecution {
   workflowId    String
   triggerType   String
   status        String    @default("pending")
-  inputPayload  String    @db.LongText
-  outputPayload String?   @db.LongText
-  error         String?   @db.LongText
+  inputPayload  String    @db.Text
+  outputPayload String?   @db.Text
+  error         String?   @db.Text
   retryCount    Int       @default(0)
   maxRetries    Int       @default(3)
   durationMs    Int?
-  stepLogs      String?   @db.LongText
+  stepLogs      String?   @db.Text
   createdAt     DateTime  @default(now())
   completedAt   DateTime?
 
