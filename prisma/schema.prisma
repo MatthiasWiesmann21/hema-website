@@ -130,3 +130,51 @@ model PageView {
   @@index([path])
   @@index([createdAt])
 }
+
+model ApiConnection {
+  id              String   @id @default(cuid())
+  name            String
+  baseUrl         String
+  authType        String   @default("none")
+  authConfig      String   @db.LongText
+  defaultHeaders  String   @db.LongText
+  active          Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Workflow {
+  id             String   @id @default(cuid())
+  name           String
+  description    String?
+  triggerType    String   @default("manual")
+  webhookKey     String?  @unique
+  cronExpression String?
+  active         Boolean  @default(true)
+  steps          String   @db.LongText
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([triggerType])
+  @@index([active])
+}
+
+model WorkflowExecution {
+  id            String    @id @default(cuid())
+  workflowId    String
+  triggerType   String
+  status        String    @default("pending")
+  inputPayload  String    @db.LongText
+  outputPayload String?   @db.LongText
+  error         String?   @db.LongText
+  retryCount    Int       @default(0)
+  maxRetries    Int       @default(3)
+  durationMs    Int?
+  stepLogs      String?   @db.LongText
+  createdAt     DateTime  @default(now())
+  completedAt   DateTime?
+
+  @@index([workflowId])
+  @@index([status])
+  @@index([createdAt])
+}

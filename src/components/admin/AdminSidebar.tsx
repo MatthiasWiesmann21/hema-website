@@ -15,6 +15,7 @@ const navItems = [
     { label: "Locations", href: "/admin/locations" },
     { label: "Navigation", href: "/admin/navigation" },
     { label: "Analytics", href: "/admin/analytics" },
+    { label: "Integrations", href: "/admin/integrations" },
     { label: "Settings", href: "/admin/settings" },
 ];
 
