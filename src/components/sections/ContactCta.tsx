@@ -1,15 +1,17 @@
 import { CallIcon, MailIcon } from "@/components/icons";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
-import { locations, site } from "@/data/site";
+import { locations } from "@/data/site";
+import { getSiteSettings } from "@/lib/settings";
 
-export function ContactCta({
+export async function ContactCta({
   title = "Zeit für ein Gespräch?",
   description = "Wir beraten Sie gerne – persönlich, unkompliziert und aus Ihrer Region.",
 }: {
   title?: string;
   description?: string;
 }) {
+  const siteSettings = await getSiteSettings();
   return (
     <section className="py-16 sm:py-20">
       <Container>
@@ -30,9 +32,9 @@ export function ContactCta({
               <Button href="/kontakt" size="lg">
                 Kontakt aufnehmen
               </Button>
-              <Button href={`mailto:${site.email}`} variant="light" size="lg">
+              <Button href={`mailto:${siteSettings.email}`} variant="light" size="lg">
                 <MailIcon className="size-4" />
-                {site.email}
+                {siteSettings.email}
               </Button>
             </div>
           </div>

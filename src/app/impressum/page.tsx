@@ -4,7 +4,7 @@ import { PageHero } from "@/components/layout/PageHero";
 import { Card } from "@/components/ui/Card";
 import { Prose } from "@/components/ui/Prose";
 import { Section } from "@/components/ui/Section";
-import { site } from "@/data/site";
+import { getSiteSettings } from "@/lib/settings";
 
 export const metadata: Metadata = {
   title: "Impressum",
@@ -20,7 +20,8 @@ const registryData = [
   },
 ];
 
-export default function ImpressumPage() {
+export default async function ImpressumPage() {
+  const siteSettings = await getSiteSettings();
   return (
     <>
       <PageHero
@@ -43,7 +44,7 @@ export default function ImpressumPage() {
             <p>
               Tel <a href="tel:+41418338888">041 833 88 88</a>
               <br />
-              E-Mail: <a href={`mailto:${site.email}`}>{site.email}</a>
+              E-Mail: <a href={`mailto:${siteSettings.email}`}>{siteSettings.email}</a>
             </p>
             <h2>Haftung für Inhalte</h2>
             <p>

@@ -2,11 +2,13 @@ import type { Metadata } from "next";
 
 import { CallIcon, MailIcon, PinIcon } from "@/components/icons";
 import { PageHero } from "@/components/layout/PageHero";
+import { ContactForm } from "@/components/sections/ContactForm";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { locations, site } from "@/data/site";
+import { getLocations } from "@/lib/locations";
+import { getSiteSettings } from "@/lib/settings";
 
 export const metadata: Metadata = {
   title: "Kontakt",
@@ -14,7 +16,9 @@ export const metadata: Metadata = {
     "hema computersysteme ag – Standorte Ibach, Muotathal und Zug. Telefon, E-Mail und Adressen auf einen Blick.",
 };
 
-export default function KontaktPage() {
+export default async function KontaktPage() {
+  const siteSettings = await getSiteSettings();
+  const locations = await getLocations();
   return (
     <>
       <PageHero
@@ -40,7 +44,7 @@ export default function KontaktPage() {
                 ) : null}
               </div>
               <p className="text-xs font-semibold tracking-[0.16em] text-brand-500 uppercase">
-                {site.name}
+                {siteSettings.name}
               </p>
 
               <dl className="flex flex-col gap-4 text-sm">
@@ -81,10 +85,10 @@ export default function KontaktPage() {
                     </dt>
                     <dd className="mt-1">
                       <a
-                        href={`mailto:${site.email}`}
+                        href={`mailto:${siteSettings.email}`}
                         className="font-medium text-brand-900 transition-colors hover:text-accent-500"
                       >
-                        {site.email}
+                        {siteSettings.email}
                       </a>
                     </dd>
                   </div>
@@ -117,6 +121,19 @@ export default function KontaktPage() {
               </div>
             </Card>
           ))}
+        </div>
+      </Section>
+
+      <Section>
+        <div className="mx-auto max-w-2xl">
+          <SectionHeading
+            eyebrow="Kontakt"
+            title="Schreiben Sie uns"
+            description="Füllen Sie das Formular aus und wir melden uns so bald wie möglich bei Ihnen."
+          />
+          <div className="mt-8">
+            <ContactForm />
+          </div>
         </div>
       </Section>
 

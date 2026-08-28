@@ -1,0 +1,132 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      String   @default("admin")
+  createdAt DateTime @default(now())
+}
+
+model NewsPost {
+  id             String    @id @default(cuid())
+  slug           String    @unique
+  title          String
+  date           DateTime  @default(now())
+  excerpt        String
+  category       String?
+  image          String?
+  ctaLabel       String?
+  ctaHref        String?
+  content        String    @db.LongText
+  published      Boolean   @default(false)
+  scheduledAt    DateTime?
+  seoTitle       String?
+  seoDescription String?
+  ogImage        String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+model CustomPage {
+  id             String   @id @default(cuid())
+  slug           String   @unique
+  title          String
+  excerpt        String?
+  content        String   @db.LongText
+  format         String   @default("markdown")
+  css            String?  @db.LongText
+  published      Boolean  @default(false)
+  seoTitle       String?
+  seoDescription String?
+  ogImage        String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model SiteSetting {
+  id          String   @id @default("singleton")
+  name        String
+  shortName   String
+  tagline     String
+  description String   @db.LongText
+  email       String
+  url         String
+  social      Json
+  updatedAt   DateTime @updatedAt
+}
+
+model MediaAsset {
+  id        String   @id @default(cuid())
+  filename  String
+  path      String
+  mimeType  String
+  size      Int
+  alt       String?
+  createdAt DateTime @default(now())
+}
+
+model Revision {
+  id        String   @id @default(cuid())
+  itemType  String
+  itemId    String
+  content   String   @db.LongText
+  author    String?
+  createdAt DateTime @default(now())
+
+  @@index([itemType, itemId])
+}
+
+model ContactSubmission {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  subject   String?
+  message   String   @db.LongText
+  status    String   @default("new")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model NavItem {
+  id        String   @id @default(cuid())
+  location  String
+  section   String?
+  label     String
+  href      String
+  external  Boolean  @default(false)
+  sortOrder Int      @default(0)
+  parentId  String?
+}
+
+model Location {
+  id             String   @id @default(cuid())
+  city           String
+  street         String
+  zip            String
+  phone          String
+  phoneHref      String
+  email          String?
+  isHeadquarters Boolean  @default(false)
+  mapQuery       String
+  sortOrder      Int      @default(0)
+}
+
+model PageView {
+  id        String   @id @default(cuid())
+  path      String
+  referrer  String?
+  createdAt DateTime @default(now())
+
+  @@index([path])
+  @@index([createdAt])
+}

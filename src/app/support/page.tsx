@@ -12,7 +12,9 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { locations, remoteTools, site } from "@/data/site";
+import { remoteTools } from "@/data/site";
+import { getLocations } from "@/lib/locations";
+import { getSiteSettings } from "@/lib/settings";
 
 export const metadata: Metadata = {
   title: "Support",
@@ -39,7 +41,9 @@ const steps = [
   },
 ];
 
-export default function SupportPage() {
+export default async function SupportPage() {
+  const siteSettings = await getSiteSettings();
+  const locations = await getLocations();
   return (
     <>
       <PageHero
@@ -148,10 +152,10 @@ export default function SupportPage() {
                 Kein dringender Fall? Schreiben Sie uns an
               </span>
               <a
-                href={`mailto:${site.email}?subject=Supportanfrage`}
+                href={`mailto:${siteSettings.email}?subject=Supportanfrage`}
                 className="text-sm font-medium text-brand-900 hover:text-accent-500"
               >
-                {site.email}
+                {siteSettings.email}
               </a>
             </div>
           </Card>

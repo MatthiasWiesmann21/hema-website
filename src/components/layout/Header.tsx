@@ -7,10 +7,20 @@ import { useEffect, useState } from "react";
 import { CallIcon, MailIcon, PinIcon } from "@/components/icons";
 import { Container } from "@/components/ui/Container";
 import { Logo } from "@/components/layout/Logo";
-import { locations, mainNav, site } from "@/data/site";
 import { cn } from "@/lib/utils";
+import type { LocationData } from "@/lib/locations";
+import type { NavItemData } from "@/lib/navigation";
+import type { SiteSettings } from "@/lib/settings";
 
-export function Header() {
+export function Header({
+  siteSettings,
+  locations,
+  navItems,
+}: {
+  siteSettings: SiteSettings;
+  locations: LocationData[];
+  navItems: NavItemData[];
+}) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -50,11 +60,11 @@ export function Header() {
             ))}
           </div>
           <a
-            href={`mailto:${site.email}`}
+            href={`mailto:${siteSettings.email}`}
             className="flex items-center gap-2 font-medium transition-colors hover:text-accent-300"
           >
             <MailIcon className="size-3.5 text-white/60" />
-            {site.email}
+            {siteSettings.email}
           </a>
         </Container>
       </div>
@@ -72,8 +82,8 @@ export function Header() {
 
           <nav aria-label="Hauptnavigation" className="hidden lg:block">
             <ul className="flex items-center gap-1">
-              {mainNav.map((item) => (
-                <li key={item.label} className="group relative">
+              {navItems.map((item) => (
+                <li key={item.id} className="group relative">
                   {item.external ? (
                     <a
                       href={item.href}
@@ -101,7 +111,7 @@ export function Header() {
                       )}
                     >
                       {item.label}
-                      {item.children ? (
+                      {item.children && item.children.length > 0 ? (
                         <svg
                           aria-hidden
                           viewBox="0 0 20 20"
@@ -116,11 +126,11 @@ export function Header() {
                     </Link>
                   )}
 
-                  {item.children ? (
+                  {item.children && item.children.length > 0 ? (
                     <div className="invisible absolute top-full left-1/2 w-60 -translate-x-1/2 pt-2 opacity-0 transition-all group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
                       <ul className="overflow-hidden rounded-2xl border border-brand-100 bg-white p-2 shadow-card">
                         {item.children.map((child) => (
-                          <li key={child.href}>
+                          <li key={child.id}>
                             <Link
                               href={child.href}
                               className={cn(
@@ -143,7 +153,7 @@ export function Header() {
           </nav>
 
           <a
-            href={locations[0].phoneHref}
+            href={locations[0]?.phoneHref ?? "#"}
             className="hidden h-10 items-center gap-2 rounded-full bg-accent-500 px-5 text-sm font-medium text-white transition-colors hover:bg-accent-600 lg:inline-flex"
           >
             <CallIcon className="size-4" />
@@ -182,16 +192,16 @@ export function Header() {
       {open ? (
         <div className="max-h-[calc(100dvh-4.5rem)] overflow-y-auto border-b border-brand-100 bg-white lg:hidden">
           <Container className="flex flex-col gap-1 py-5">
-            {mainNav.map((item) =>
-              item.children ? (
-                <div key={item.label} className="py-2">
+            {navItems.map((item) =>
+              item.children && item.children.length > 0 ? (
+                <div key={item.id} className="py-2">
                   <p className="px-2 text-xs font-semibold tracking-[0.16em] text-brand-500 uppercase">
                     {item.label}
                   </p>
                   <div className="mt-1 flex flex-col">
                     {item.children.map((child) => (
                       <Link
-                        key={child.href}
+                        key={child.id}
                         href={child.href}
                         onClick={closeMenu}
                         className={cn(
@@ -208,7 +218,7 @@ export function Header() {
                 </div>
               ) : item.external ? (
                 <a
-                  key={item.label}
+                  key={item.id}
                   href={item.href}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -219,7 +229,7 @@ export function Header() {
                 </a>
               ) : (
                 <Link
-                  key={item.label}
+                  key={item.id}
                   href={item.href}
                   onClick={closeMenu}
                   className={cn(
@@ -244,11 +254,11 @@ export function Header() {
                 </a>
               ))}
               <a
-                href={`mailto:${site.email}`}
+                href={`mailto:${siteSettings.email}`}
                 className="flex items-center gap-2 text-brand-900/80"
               >
                 <MailIcon className="size-4 text-accent-500" />
-                {site.email}
+                {siteSettings.email}
               </a>
             </div>
           </Container>

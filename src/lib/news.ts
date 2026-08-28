@@ -1,9 +1,4 @@
-import fs from "node:fs/promises";
-import path from "node:path";
-
-import matter from "gray-matter";
-
-const NEWS_DIR = path.join(process.cwd(), "src/content/news");
+import { prisma } from "@/lib/prisma";
 
 export type NewsMeta = {
   slug: string;
@@ -13,32 +8,92 @@ export type NewsMeta = {
   category?: string;
   image?: string;
   cta?: { label: string; href: string };
+  seoTitle?: string;
+  seoDescription?: string;
+  ogImage?: string;
 };
 
 export type NewsPost = NewsMeta & { content: string };
 
 export async function getAllNews(): Promise<NewsPost[]> {
-  const files = await fs.readdir(NEWS_DIR);
-  const posts = await Promise.all(
-    files
-      .filter((file) => file.endsWith(".mdx"))
-      .map(async (file) => {
-        const raw = await fs.readFile(path.join(NEWS_DIR, file), "utf8");
-        const { data, content } = matter(raw);
-        return {
-          slug: file.replace(/\.mdx$/, ""),
-          content,
-          ...(data as Omit<NewsMeta, "slug">),
-        } satisfies NewsPost;
-      }),
-  );
+  const posts = await prisma.newsPost.findMany({
+    where: {
+      OR: [
+        { published: true },
+        { scheduledAt: { lte: new Date() } },
+      ],
+    },
+    orderBy: { date: "desc" },
+  });
 
-  return posts.sort((a, b) => (a.date < b.date ? 1 : -1));
+  return posts.map((post) => ({
+    slug: post.slug,
+    title: post.title,
+    date: post.date.toISOString(),
+    excerpt: post.excerpt,
+    category: post.category ?? undefined,
+    image: post.image ?? undefined,
+    cta:
+      post.ctaLabel && post.ctaHref
+        ? { label: post.ctaLabel, href: post.ctaHref }
+        : undefined,
+    seoTitle: post.seoTitle ?? undefined,
+    seoDescription: post.seoDescription ?? undefined,
+    ogImage: post.ogImage ?? undefined,
+    content: post.content,
+  }));
 }
 
 export async function getNewsPost(slug: string): Promise<NewsPost | undefined> {
-  const posts = await getAllNews();
-  return posts.find((post) => post.slug === slug);
+  const post = await prisma.newsPost.findUnique({
+    where: { slug },
+  });
+
+  if (!post) return undefined;
+
+  const isVisible = post.published || (post.scheduledAt && post.scheduledAt <= new Date());
+  if (!isVisible) return undefined;
+
+  return {
+    slug: post.slug,
+    title: post.title,
+    date: post.date.toISOString(),
+    excerpt: post.excerpt,
+    category: post.category ?? undefined,
+    image: post.image ?? undefined,
+    cta:
+      post.ctaLabel && post.ctaHref
+        ? { label: post.ctaLabel, href: post.ctaHref }
+        : undefined,
+    seoTitle: post.seoTitle ?? undefined,
+    seoDescription: post.seoDescription ?? undefined,
+    ogImage: post.ogImage ?? undefined,
+    content: post.content,
+  };
+}
+
+export async function getNewsPostForPreview(
+  slug: string,
+): Promise<NewsPost | undefined> {
+  const post = await prisma.newsPost.findUnique({
+    where: { slug },
+  });
+
+  if (!post) return undefined;
+
+  return {
+    slug: post.slug,
+    title: post.title,
+    date: post.date.toISOString(),
+    excerpt: post.excerpt,
+    category: post.category ?? undefined,
+    image: post.image ?? undefined,
+    cta:
+      post.ctaLabel && post.ctaHref
+        ? { label: post.ctaLabel, href: post.ctaHref }
+        : undefined,
+    content: post.content,
+  };
 }
 
 export function formatDate(date: string) {

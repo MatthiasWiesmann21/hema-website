@@ -3,10 +3,20 @@ import Link from "next/link";
 import { CallIcon, MailIcon, PinIcon } from "@/components/icons";
 import { Logo } from "@/components/layout/Logo";
 import { Container } from "@/components/ui/Container";
-import { footerNav, locations, site } from "@/data/site";
 import { isExternal } from "@/lib/utils";
+import type { LocationData } from "@/lib/locations";
+import type { NavItemData } from "@/lib/navigation";
+import type { SiteSettings } from "@/lib/settings";
 
-export function Footer() {
+export function Footer({
+  siteSettings,
+  locations,
+  navItems,
+}: {
+  siteSettings: SiteSettings;
+  locations: LocationData[];
+  navItems: NavItemData[];
+}) {
   return (
     <footer className="mt-24 bg-brand-950 text-white">
       <Container className="py-16">
@@ -14,12 +24,12 @@ export function Footer() {
           <div className="flex flex-col gap-6">
             <Logo variant="light" />
             <p className="max-w-sm text-sm leading-relaxed text-white/65">
-              {site.tagline}. Beratung, Projektierung, Planung und Realisierung
+              {siteSettings.tagline}. Beratung, Projektierung, Planung und Realisierung
               von Informatiksystemen für KMU, öffentliche Institutionen und
               Privatpersonen.
             </p>
             <div className="flex gap-3">
-              {site.social.map((item) => (
+              {siteSettings.social.map((item) => (
                 <a
                   key={item.label}
                   href={item.href}
@@ -57,14 +67,21 @@ export function Footer() {
           </div>
 
           <div className="grid gap-10 sm:grid-cols-3">
-            {footerNav.map((column) => (
-              <div key={column.title}>
+            {Object.entries(
+              navItems.reduce<Record<string, NavItemData[]>>((acc, item) => {
+                const section = item.section ?? "Links";
+                if (!acc[section]) acc[section] = [];
+                acc[section].push(item);
+                return acc;
+              }, {}),
+            ).map(([section, items]) => (
+              <div key={section}>
                 <h3 className="text-xs font-semibold tracking-[0.16em] text-white/50 uppercase">
-                  {column.title}
+                  {section}
                 </h3>
                 <ul className="mt-4 flex flex-col gap-2.5 text-sm">
-                  {column.links.map((link) => (
-                    <li key={link.label}>
+                  {items.map((link) => (
+                    <li key={link.id}>
                       {isExternal(link.href) ? (
                         <a
                           href={link.href}
@@ -92,7 +109,7 @@ export function Footer() {
 
         <div className="mt-14 grid gap-6 border-t border-white/10 pt-10 sm:grid-cols-3">
           {locations.map((location) => (
-            <div key={location.city} className="text-sm">
+            <div key={location.id} className="text-sm">
               <p className="font-display text-base font-semibold text-white">
                 {location.city}
                 {location.isHeadquarters ? (
@@ -117,11 +134,11 @@ export function Footer() {
                 {location.phone}
               </a>
               <a
-                href={`mailto:${site.email}`}
+                href={`mailto:${siteSettings.email}`}
                 className="mt-1 flex items-center gap-2 text-white/75 transition-colors hover:text-white"
               >
                 <MailIcon className="size-4 text-white/40" />
-                {site.email}
+                {siteSettings.email}
               </a>
             </div>
           ))}
@@ -129,7 +146,7 @@ export function Footer() {
 
         <div className="mt-12 flex flex-col gap-2 border-t border-white/10 pt-8 text-xs text-white/45 sm:flex-row sm:items-center sm:justify-between">
           <p>
-            © {new Date().getFullYear()} {site.name} · {site.tagline}
+            © {new Date().getFullYear()} {siteSettings.name} · {siteSettings.tagline}
           </p>
           <div className="flex gap-5">
             <Link href="/impressum" className="hover:text-white">

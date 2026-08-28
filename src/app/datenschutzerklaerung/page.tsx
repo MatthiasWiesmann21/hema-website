@@ -4,7 +4,7 @@ import { PageHero } from "@/components/layout/PageHero";
 import { Card } from "@/components/ui/Card";
 import { Prose } from "@/components/ui/Prose";
 import { Section } from "@/components/ui/Section";
-import { site } from "@/data/site";
+import { getSiteSettings } from "@/lib/settings";
 
 export const metadata: Metadata = {
   title: "Datenschutzerklärung",
@@ -12,7 +12,8 @@ export const metadata: Metadata = {
     "Datenschutzerklärung der hema computersysteme ag: Umgang mit personenbezogenen Daten, Cookies, Drittanbieter-Dienste und Ihre Rechte.",
 };
 
-export default function DatenschutzPage() {
+export default async function DatenschutzPage() {
+  const siteSettings = await getSiteSettings();
   return (
     <>
       <PageHero
@@ -37,7 +38,7 @@ export default function DatenschutzPage() {
               <br />
               Schweiz
               <br />
-              E-Mail: <a href={`mailto:${site.email}`}>{site.email}</a>
+              E-Mail: <a href={`mailto:${siteSettings.email}`}>{siteSettings.email}</a>
             </p>
             <p>
               <strong>Vertretungsberechtigte Personen:</strong> Bruno Marty,
@@ -47,7 +48,7 @@ export default function DatenschutzPage() {
             <p>
               <strong>Datenschutzbeauftragte Person:</strong> Bruno Marty,{" "}
               <a href="tel:+41418338888">+41 41 833 88 88</a>,{" "}
-              <a href={`mailto:${site.email}`}>{site.email}</a>
+              <a href={`mailto:${siteSettings.email}`}>{siteSettings.email}</a>
             </p>
 
             <h2>Allgemeines / Einleitung</h2>
@@ -366,10 +367,10 @@ export default function DatenschutzPage() {
               <div>
                 <p className="text-xs text-brand-950/55">E-Mail</p>
                 <a
-                  href={`mailto:${site.email}`}
+                  href={`mailto:${siteSettings.email}`}
                   className="mt-1 block font-medium text-brand-900 hover:text-accent-500"
                 >
-                  {site.email}
+                  {siteSettings.email}
                 </a>
               </div>
               <div>

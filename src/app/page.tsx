@@ -10,11 +10,12 @@ import { CountUp } from "@/components/ui/CountUp";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { getAllNews } from "@/lib/news";
+import { getSiteSettings } from "@/lib/settings";
 import { services } from "@/data/services";
-import { site } from "@/data/site";
 
 export default async function Home() {
   const news = (await getAllNews()).slice(0, 3);
+  const siteSettings = await getSiteSettings();
 
   return (
     <>
@@ -37,7 +38,7 @@ export default async function Home() {
             <div>
               <span className="inline-flex items-center gap-2 text-xs font-semibold tracking-[0.18em] text-accent-300 uppercase">
                 <span aria-hidden className="h-px w-6 bg-accent-300" />
-                {site.tagline}
+                {siteSettings.tagline}
               </span>
               <h1 className="mt-6 text-4xl font-semibold tracking-tight text-white sm:text-5xl lg:text-6xl">
                 Ihr IT Specialist
@@ -45,7 +46,7 @@ export default async function Home() {
                 in Ihrer Region
               </h1>
               <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/75">
-                {site.description}
+                {siteSettings.description}
               </p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <Button href="/leistungen" size="lg">

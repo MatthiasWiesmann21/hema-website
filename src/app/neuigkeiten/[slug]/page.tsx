@@ -27,9 +27,13 @@ export async function generateMetadata({
   if (!post) return { title: "Neuigkeiten" };
 
   return {
-    title: post.title,
-    description: post.excerpt,
-    openGraph: { title: post.title, description: post.excerpt },
+    title: post.seoTitle ?? post.title,
+    description: post.seoDescription ?? post.excerpt,
+    openGraph: {
+      title: post.seoTitle ?? post.title,
+      description: post.seoDescription ?? post.excerpt,
+      images: post.ogImage ? [{ url: post.ogImage }] : post.image ? [{ url: post.image }] : undefined,
+    },
   };
 }
 

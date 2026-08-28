@@ -1,10 +1,11 @@
 import type { MetadataRoute } from "next";
 
 import { services } from "@/data/services";
-import { site } from "@/data/site";
 import { getAllNews } from "@/lib/news";
+import { getSiteSettings } from "@/lib/settings";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const settings = await getSiteSettings();
   const staticRoutes = [
     "/",
     "/leistungen",
@@ -25,17 +26,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   return [
     ...staticRoutes.map((route) => ({
-      url: `${site.url}${route}`,
+      url: `${settings.url}${route}`,
       lastModified: new Date(),
       priority: route === "/" ? 1 : 0.7,
     })),
     ...serviceRoutes.map((route) => ({
-      url: `${site.url}${route}`,
+      url: `${settings.url}${route}`,
       lastModified: new Date(),
       priority: 0.8,
     })),
     ...news.map((post) => ({
-      url: `${site.url}/neuigkeiten/${post.slug}`,
+      url: `${settings.url}/neuigkeiten/${post.slug}`,
       lastModified: new Date(post.date),
       priority: 0.5,
     })),

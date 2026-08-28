@@ -1,0 +1,5 @@
+# Create a .env file in the project root with these variables:
+#
+# DATABASE_URL="mysql://USER:PASSWORD@localhost:3306/hema_website"
+# AUTH_SECRET="generate-a-secure-random-string-here"
+# NEXTAUTH_URL="http://localhost:3000"
