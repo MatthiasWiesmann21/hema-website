@@ -3,11 +3,15 @@ import { revalidatePath } from "next/cache";
 
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { revisionRestoreSchema } from "@/lib/schemas";
 
 export async function GET(request: Request) {
   const session = await auth();
   if (!session?.user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  if (session.user.role !== "admin") {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
   const { searchParams } = new URL(request.url);
@@ -41,8 +45,25 @@ export async function POST(request: Request) {
   if (!session?.user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+  if (session.user.role !== "admin") {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
 
-  const body = await request.json();
+  let rawBody: unknown;
+  try {
+    rawBody = await request.json();
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
+  }
+
+  const parsed = revisionRestoreSchema.safeParse(rawBody);
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: 'Validation failed', details: parsed.error.flatten().fieldErrors },
+      { status: 400 },
+    );
+  }
+  const body = parsed.data;
   const { revisionId } = body;
 
   if (!revisionId) {
@@ -75,7 +96,7 @@ export async function POST(request: Request) {
       });
     }
 
-    const { id, createdAt, updatedAt, ...restoreData } = snapshot;
+    const { id: _id, createdAt: _createdAt, updatedAt: _updatedAt, ...restoreData } = snapshot;
     const restored = await prisma.newsPost.update({
       where: { id: revision.itemId },
       data: {
@@ -118,7 +139,7 @@ export async function POST(request: Request) {
       });
     }
 
-    const { id, createdAt, updatedAt, ...restoreData } = snapshot;
+    const { id: _id2, createdAt: _createdAt2, updatedAt: _updatedAt2, ...restoreData } = snapshot;
     const restored = await prisma.customPage.update({
       where: { id: revision.itemId },
       data: {

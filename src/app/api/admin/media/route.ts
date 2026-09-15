@@ -3,13 +3,11 @@ import fs from "node:fs/promises";
 import path from "node:path";
 
 import { prisma } from "@/lib/prisma";
-import { auth } from "@/lib/auth";
+import { requireAdmin } from "@/lib/api-auth";
 
 export async function GET() {
-  const session = await auth();
-  if (!session?.user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const adminError = await requireAdmin();
+  if (adminError) return adminError;
 
   const assets = await prisma.mediaAsset.findMany({
     orderBy: { createdAt: "desc" },
@@ -20,10 +18,8 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const session = await auth();
-  if (!session?.user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const adminError = await requireAdmin();
+  if (adminError) return adminError;
 
   const formData = await request.formData();
   const file = formData.get("file") as File | null;
@@ -36,6 +32,11 @@ export async function POST(request: Request) {
   const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/webp", "image/svg+xml"];
   if (!allowedTypes.includes(file.type)) {
     return NextResponse.json({ error: "Invalid file type" }, { status: 400 });
+  }
+
+  const maxSize = 10 * 1024 * 1024; // 10 MB
+  if (file.size > maxSize) {
+    return NextResponse.json({ error: "File too large (max 10 MB)" }, { status: 400 });
   }
 
   const now = new Date();

@@ -5,7 +5,6 @@ import Image from "next/image";
 
 export function Logo({
   className,
-  variant = "dark",
 }: {
   className?: string;
   variant?: "dark" | "light";
@@ -17,7 +16,7 @@ export function Logo({
       className={cn("group inline-flex items-center gap-3", className)}
     >
       <Image
-        src="/images/hema-logo-200x200-Cleaned.bmp"
+        src="/images/hema-logo-200x200-Cleaned.png"
         alt="hema computersysteme ag"
         width={86}
         height={86}

@@ -7,6 +7,7 @@ import { Prose } from "@/components/ui/Prose";
 import { Section } from "@/components/ui/Section";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { sanitizeCss, sanitizeHtml } from "@/lib/sanitize";
 
 export async function generateMetadata({
   params,
@@ -51,9 +52,9 @@ export default async function CustomPagePreview({
         />
         <Section>
           {page.css ? (
-            <style dangerouslySetInnerHTML={{ __html: page.css }} />
+            <style dangerouslySetInnerHTML={{ __html: sanitizeCss(page.css) }} />
           ) : null}
-          <div dangerouslySetInnerHTML={{ __html: page.content }} />
+          <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(page.content) }} />
         </Section>
       </>
     );

@@ -6,6 +6,7 @@ import { PageHero } from "@/components/layout/PageHero";
 import { Prose } from "@/components/ui/Prose";
 import { Section } from "@/components/ui/Section";
 import { prisma } from "@/lib/prisma";
+import { sanitizeCss, sanitizeHtml } from "@/lib/sanitize";
 
 export async function generateMetadata({
   params,
@@ -26,6 +27,14 @@ export async function generateMetadata({
       images: page.ogImage ? [{ url: page.ogImage }] : undefined,
     },
   };
+}
+
+export async function generateStaticParams() {
+  const pages = await prisma.customPage.findMany({
+    where: { published: true },
+    select: { slug: true },
+  });
+  return pages.map((p) => ({ slug: p.slug }));
 }
 
 export default async function CustomPagePage({
@@ -49,9 +58,9 @@ export default async function CustomPagePage({
         />
         <Section>
           {page.css ? (
-            <style dangerouslySetInnerHTML={{ __html: page.css }} />
+            <style dangerouslySetInnerHTML={{ __html: sanitizeCss(page.css) }} />
           ) : null}
-          <div dangerouslySetInnerHTML={{ __html: page.content }} />
+          <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(page.content) }} />
         </Section>
       </>
     );

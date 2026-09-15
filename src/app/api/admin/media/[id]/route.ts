@@ -3,16 +3,14 @@ import fs from "node:fs/promises";
 import path from "node:path";
 
 import { prisma } from "@/lib/prisma";
-import { auth } from "@/lib/auth";
+import { requireAdmin } from "@/lib/api-auth";
 
 export async function DELETE(
   _request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  const session = await auth();
-  if (!session?.user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const adminError = await requireAdmin();
+  if (adminError) return adminError;
 
   const { id } = await params;
   const asset = await prisma.mediaAsset.findUnique({ where: { id } });

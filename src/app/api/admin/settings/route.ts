@@ -2,13 +2,12 @@ import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 
 import { prisma } from "@/lib/prisma";
-import { auth } from "@/lib/auth";
+import { requireAdmin } from "@/lib/api-auth";
+import { siteSettingsSchema } from "@/lib/schemas";
 
 export async function GET() {
-  const session = await auth();
-  if (!session?.user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const adminError = await requireAdmin();
+  if (adminError) return adminError;
 
   const settings = await prisma.siteSetting.findUnique({
     where: { id: "singleton" },
@@ -22,12 +21,24 @@ export async function GET() {
 }
 
 export async function PATCH(request: Request) {
-  const session = await auth();
-  if (!session?.user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const adminError = await requireAdmin();
+  if (adminError) return adminError;
+
+  let rawBody: unknown;
+  try {
+    rawBody = await request.json();
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
   }
 
-  const body = await request.json();
+  const parsed = siteSettingsSchema.safeParse(rawBody);
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: 'Validation failed', details: parsed.error.flatten().fieldErrors },
+      { status: 400 },
+    );
+  }
+  const body = parsed.data;
 
   try {
     const settings = await prisma.siteSetting.update({

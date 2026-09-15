@@ -117,7 +117,7 @@ async function main() {
   const existingNavCount = await prisma.navItem.count();
   if (existingNavCount === 0) {
     // Header parents
-    const startseite = await prisma.navItem.create({
+    const _startseite = await prisma.navItem.create({
       data: { location: "header", label: "Startseite", href: "/", external: false, sortOrder: 0 },
     });
     const leistungen = await prisma.navItem.create({

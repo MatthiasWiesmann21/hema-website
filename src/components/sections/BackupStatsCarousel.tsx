@@ -19,10 +19,7 @@ function DataLossCard({ causes, animate }: { causes: Cause[]; animate: boolean }
   );
 
   useEffect(() => {
-    if (!animate) {
-      setCounts(causes.map(() => 0));
-      return;
-    }
+    if (!animate) return;
 
     const el = ref.current;
     if (!el) return;

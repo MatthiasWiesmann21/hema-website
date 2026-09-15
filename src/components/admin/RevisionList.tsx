@@ -40,7 +40,8 @@ export function RevisionList({
   }, [itemType, itemId]);
 
   useEffect(() => {
-    fetchRevisions();
+    const id = setTimeout(fetchRevisions, 0);
+    return () => clearTimeout(id);
   }, [fetchRevisions]);
 
   const handleRestore = async (revisionId: string) => {

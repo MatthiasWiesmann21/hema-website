@@ -1,12 +1,12 @@
 "use client";
 
 import { Suspense, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { signIn } from "next-auth/react";
 
 function LoginForm() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -85,7 +85,7 @@ function LoginForm() {
           </div>
         </form>
         <p className="mt-6 text-center text-xs text-white/40">
-          <a href="/" className="hover:text-white/60">← Back to website</a>
+          <Link href="/" className="hover:text-white/60">← Back to website</Link>
         </p>
       </div>
     </div>

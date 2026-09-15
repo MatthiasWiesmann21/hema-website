@@ -4,10 +4,9 @@ type StepDefinition = {
   connectionId: string;
   method: string;
   path: string;
-  transformType: "mapping" | "template" | "code";
+  transformType: "mapping" | "template";
   fieldMappings?: { source: string; target: string; default?: string }[];
   template?: string;
-  code?: string;
   headers?: Record<string, string>;
 };
 
@@ -63,16 +62,6 @@ function applyTemplate(
   });
 }
 
-function applyCode(
-  input: unknown,
-  previousOutput: unknown,
-  trigger: unknown,
-  code: string,
-): unknown {
-  const fn = new Function("input", "previousOutput", "trigger", code);
-  return fn(input, previousOutput, trigger);
-}
-
 function buildAuthHeaders(
   authType: string,
   authConfig: string,
@@ -93,6 +82,134 @@ function buildAuthHeaders(
     default:
       return {};
   }
+}
+
+function transformInput(
+  step: StepDefinition,
+  currentOutput: unknown,
+  trigger: unknown,
+): unknown {
+  if (step.transformType === "mapping" && step.fieldMappings) {
+    return applyMapping(currentOutput, step.fieldMappings);
+  }
+  if (step.transformType === "template" && step.template) {
+    const rendered = applyTemplate(currentOutput, trigger, step.template);
+    try {
+      return JSON.parse(rendered);
+    } catch {
+      return rendered;
+    }
+  }
+  return currentOutput;
+}
+
+async function executeStep(
+  step: StepDefinition,
+  stepIndex: number,
+  currentOutput: unknown,
+  trigger: unknown,
+): Promise<{ output: unknown; log: StepLog }> {
+  const connection = await prisma.apiConnection.findUnique({
+    where: { id: step.connectionId },
+  });
+
+  if (!connection) {
+    throw new Error(`Connection ${step.connectionId} not found`);
+  }
+
+  const transformedBody = transformInput(step, currentOutput, trigger);
+
+  const url = `${connection.baseUrl.replace(/\/$/, "")}${step.path}`;
+
+  const authHeaders = buildAuthHeaders(connection.authType, connection.authConfig);
+  let defaultHeaders: Record<string, string> = {};
+  if (connection.defaultHeaders) {
+    try {
+      defaultHeaders = JSON.parse(connection.defaultHeaders);
+    } catch { /* ignore */ }
+  }
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    ...defaultHeaders,
+    ...authHeaders,
+    ...(step.headers || {}),
+  };
+
+  const stepStart = Date.now();
+
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 30000);
+
+    const res = await fetch(url, {
+      method: step.method,
+      headers,
+      body: ["GET", "HEAD"].includes(step.method) ? undefined : JSON.stringify(transformedBody),
+      signal: controller.signal,
+    });
+    clearTimeout(timeout);
+
+    const responseText = await res.text();
+    let responseBody: unknown;
+    try {
+      responseBody = JSON.parse(responseText);
+    } catch {
+      responseBody = responseText;
+    }
+
+    const log: StepLog = {
+      stepIndex,
+      connectionName: connection.name,
+      method: step.method,
+      url,
+      requestHeaders: headers,
+      requestBody: transformedBody,
+      responseStatus: res.status,
+      responseBody,
+      durationMs: Date.now() - stepStart,
+    };
+
+    if (!res.ok) {
+      throw new Error(`Step ${stepIndex + 1} failed: ${res.status} ${res.statusText}`);
+    }
+
+    return { output: responseBody, log };
+  } catch (stepError) {
+    const log: StepLog = {
+      stepIndex,
+      connectionName: connection.name,
+      method: step.method,
+      url,
+      requestHeaders: headers,
+      requestBody: transformedBody,
+      responseStatus: 0,
+      responseBody: null,
+      durationMs: Date.now() - stepStart,
+      error: stepError instanceof Error ? stepError.message : "Unknown error",
+    };
+    return { output: null, log };
+  }
+}
+
+async function runAllSteps(
+  steps: StepDefinition[],
+  inputPayload: unknown,
+): Promise<{ output: unknown; logs: StepLog[] }> {
+  const stepLogs: StepLog[] = [];
+  let currentOutput: unknown = inputPayload;
+  const trigger = inputPayload;
+
+  for (let stepIndex = 0; stepIndex < steps.length; stepIndex++) {
+    const step = steps[stepIndex];
+    const { output, log } = await executeStep(step, stepIndex, currentOutput, trigger);
+    stepLogs.push(log);
+    if (log.error) {
+      throw new Error(log.error);
+    }
+    currentOutput = output;
+  }
+
+  return { output: currentOutput, logs: stepLogs };
 }
 
 export async function executeWorkflow(
@@ -122,124 +239,18 @@ export async function executeWorkflow(
   });
 
   const startTime = Date.now();
-  const stepLogs: StepLog[] = [];
-  let currentOutput: unknown = inputPayload;
-  const trigger = inputPayload;
 
   try {
-    for (let stepIndex = 0; stepIndex < steps.length; stepIndex++) {
-      const step = steps[stepIndex];
-      const connection = await prisma.apiConnection.findUnique({
-        where: { id: step.connectionId },
-      });
+    const { output, logs } = await runAllSteps(steps, inputPayload);
 
-      if (!connection) {
-        throw new Error(`Connection ${step.connectionId} not found`);
-      }
-
-      // Transform input
-      let transformedBody: unknown;
-      if (step.transformType === "mapping" && step.fieldMappings) {
-        transformedBody = applyMapping(currentOutput, step.fieldMappings);
-      } else if (step.transformType === "template" && step.template) {
-        const rendered = applyTemplate(currentOutput, trigger, step.template);
-        try {
-          transformedBody = JSON.parse(rendered);
-        } catch {
-          transformedBody = rendered;
-        }
-      } else if (step.transformType === "code" && step.code) {
-        transformedBody = applyCode(currentOutput, step.transformType === "code" ? currentOutput : undefined, trigger, step.code);
-      } else {
-        transformedBody = currentOutput;
-      }
-
-      // Build URL
-      const url = `${connection.baseUrl.replace(/\/$/, "")}${step.path}`;
-
-      // Build headers
-      const authHeaders = buildAuthHeaders(connection.authType, connection.authConfig);
-      let defaultHeaders: Record<string, string> = {};
-      if (connection.defaultHeaders) {
-        try {
-          defaultHeaders = JSON.parse(connection.defaultHeaders);
-        } catch { /* ignore */ }
-      }
-      const headers: Record<string, string> = {
-        "Content-Type": "application/json",
-        ...defaultHeaders,
-        ...authHeaders,
-        ...(step.headers || {}),
-      };
-
-      const stepStart = Date.now();
-      let stepLog: StepLog;
-
-      try {
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 30000);
-
-        const res = await fetch(url, {
-          method: step.method,
-          headers,
-          body: ["GET", "HEAD"].includes(step.method) ? undefined : JSON.stringify(transformedBody),
-          signal: controller.signal,
-        });
-        clearTimeout(timeout);
-
-        const responseText = await res.text();
-        let responseBody: unknown;
-        try {
-          responseBody = JSON.parse(responseText);
-        } catch {
-          responseBody = responseText;
-        }
-
-        stepLog = {
-          stepIndex,
-          connectionName: connection.name,
-          method: step.method,
-          url,
-          requestHeaders: headers,
-          requestBody: transformedBody,
-          responseStatus: res.status,
-          responseBody,
-          durationMs: Date.now() - stepStart,
-        };
-        stepLogs.push(stepLog);
-
-        if (!res.ok) {
-          throw new Error(`Step ${stepIndex + 1} failed: ${res.status} ${res.statusText}`);
-        }
-
-        currentOutput = responseBody;
-      } catch (stepError) {
-        stepLog = {
-          stepIndex,
-          connectionName: connection.name,
-          method: step.method,
-          url,
-          requestHeaders: headers,
-          requestBody: transformedBody,
-          responseStatus: 0,
-          responseBody: null,
-          durationMs: Date.now() - stepStart,
-          error: stepError instanceof Error ? stepError.message : "Unknown error",
-        };
-        stepLogs.push(stepLog);
-        throw stepError;
-      }
-    }
-
-    // Success
     const durationMs = Date.now() - startTime;
     await prisma.workflowExecution.update({
       where: { id: execution.id },
       data: {
         status: "success",
-        outputPayload: JSON.stringify(currentOutput),
+        outputPayload: JSON.stringify(output),
         durationMs,
-        stepLogs: JSON.stringify(stepLogs),
+        stepLogs: JSON.stringify(logs),
         completedAt: new Date(),
       },
     });
@@ -248,7 +259,6 @@ export async function executeWorkflow(
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
 
-    // Retry logic with exponential backoff
     const currentRetryCount = await prisma.workflowExecution.findUnique({
       where: { id: execution.id },
       select: { retryCount: true },
@@ -262,7 +272,6 @@ export async function executeWorkflow(
         data: {
           status: "retrying",
           retryCount: retryCount + 1,
-          stepLogs: JSON.stringify(stepLogs),
         },
       });
 
@@ -270,7 +279,7 @@ export async function executeWorkflow(
       await new Promise((resolve) => setTimeout(resolve, backoffMs));
 
       // Retry from the beginning
-      return executeWorkflowWithRetry(workflowId, triggerType, inputPayload, execution.id, retryCount + 1);
+      return retryWorkflow(workflowId, triggerType, inputPayload, execution.id, retryCount + 1, startTime);
     }
 
     // Max retries reached — mark as failed
@@ -281,7 +290,6 @@ export async function executeWorkflow(
         status: "failed",
         error: errorMessage,
         durationMs,
-        stepLogs: JSON.stringify(stepLogs),
         completedAt: new Date(),
       },
     });
@@ -290,12 +298,13 @@ export async function executeWorkflow(
   }
 }
 
-async function executeWorkflowWithRetry(
+async function retryWorkflow(
   workflowId: string,
   triggerType: string,
   inputPayload: unknown,
   executionId: string,
   retryCount: number,
+  startTime: number,
 ): Promise<string> {
   const workflow = await prisma.workflow.findUnique({
     where: { id: workflowId },
@@ -307,120 +316,18 @@ async function executeWorkflowWithRetry(
 
   const steps: StepDefinition[] = JSON.parse(workflow.steps || "[]");
   const maxRetries = 3;
-  const stepLogs: StepLog[] = [];
-  let currentOutput: unknown = inputPayload;
-  const trigger = inputPayload;
-  const startTime = Date.now();
 
   try {
-    for (let stepIndex = 0; stepIndex < steps.length; stepIndex++) {
-      const step = steps[stepIndex];
-      const connection = await prisma.apiConnection.findUnique({
-        where: { id: step.connectionId },
-      });
-
-      if (!connection) {
-        throw new Error(`Connection ${step.connectionId} not found`);
-      }
-
-      let transformedBody: unknown;
-      if (step.transformType === "mapping" && step.fieldMappings) {
-        transformedBody = applyMapping(currentOutput, step.fieldMappings);
-      } else if (step.transformType === "template" && step.template) {
-        const rendered = applyTemplate(currentOutput, trigger, step.template);
-        try {
-          transformedBody = JSON.parse(rendered);
-        } catch {
-          transformedBody = rendered;
-        }
-      } else if (step.transformType === "code" && step.code) {
-        transformedBody = applyCode(currentOutput, currentOutput, trigger, step.code);
-      } else {
-        transformedBody = currentOutput;
-      }
-
-      const url = `${connection.baseUrl.replace(/\/$/, "")}${step.path}`;
-      const authHeaders = buildAuthHeaders(connection.authType, connection.authConfig);
-      let defaultHeaders: Record<string, string> = {};
-      if (connection.defaultHeaders) {
-        try {
-          defaultHeaders = JSON.parse(connection.defaultHeaders);
-        } catch { /* ignore */ }
-      }
-      const headers: Record<string, string> = {
-        "Content-Type": "application/json",
-        ...defaultHeaders,
-        ...authHeaders,
-        ...(step.headers || {}),
-      };
-
-      const stepStart = Date.now();
-      let stepLog: StepLog;
-
-      try {
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 30000);
-
-        const res = await fetch(url, {
-          method: step.method,
-          headers,
-          body: ["GET", "HEAD"].includes(step.method) ? undefined : JSON.stringify(transformedBody),
-          signal: controller.signal,
-        });
-        clearTimeout(timeout);
-
-        const responseText = await res.text();
-        let responseBody: unknown;
-        try {
-          responseBody = JSON.parse(responseText);
-        } catch {
-          responseBody = responseText;
-        }
-
-        stepLog = {
-          stepIndex,
-          connectionName: connection.name,
-          method: step.method,
-          url,
-          requestHeaders: headers,
-          requestBody: transformedBody,
-          responseStatus: res.status,
-          responseBody,
-          durationMs: Date.now() - stepStart,
-        };
-        stepLogs.push(stepLog);
-
-        if (!res.ok) {
-          throw new Error(`Step ${stepIndex + 1} failed: ${res.status} ${res.statusText}`);
-        }
-
-        currentOutput = responseBody;
-      } catch (stepError) {
-        stepLog = {
-          stepIndex,
-          connectionName: connection.name,
-          method: step.method,
-          url,
-          requestHeaders: headers,
-          requestBody: transformedBody,
-          responseStatus: 0,
-          responseBody: null,
-          durationMs: Date.now() - stepStart,
-          error: stepError instanceof Error ? stepError.message : "Unknown error",
-        };
-        stepLogs.push(stepLog);
-        throw stepError;
-      }
-    }
+    const { output, logs } = await runAllSteps(steps, inputPayload);
 
     const durationMs = Date.now() - startTime;
     await prisma.workflowExecution.update({
       where: { id: executionId },
       data: {
         status: "success",
-        outputPayload: JSON.stringify(currentOutput),
+        outputPayload: JSON.stringify(output),
         durationMs,
-        stepLogs: JSON.stringify(stepLogs),
+        stepLogs: JSON.stringify(logs),
         completedAt: new Date(),
       },
     });
@@ -435,14 +342,13 @@ async function executeWorkflowWithRetry(
         data: {
           status: "retrying",
           retryCount: retryCount + 1,
-          stepLogs: JSON.stringify(stepLogs),
         },
       });
 
       const backoffMs = 1000 * Math.pow(2, retryCount);
       await new Promise((resolve) => setTimeout(resolve, backoffMs));
 
-      return executeWorkflowWithRetry(workflowId, triggerType, inputPayload, executionId, retryCount + 1);
+      return retryWorkflow(workflowId, triggerType, inputPayload, executionId, retryCount + 1, startTime);
     }
 
     const durationMs = Date.now() - startTime;
@@ -452,7 +358,6 @@ async function executeWorkflowWithRetry(
         status: "failed",
         error: errorMessage,
         durationMs,
-        stepLogs: JSON.stringify(stepLogs),
         completedAt: new Date(),
       },
     });

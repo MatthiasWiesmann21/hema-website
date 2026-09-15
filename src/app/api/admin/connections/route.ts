@@ -1,13 +1,12 @@
 import { NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
-import { auth } from "@/lib/auth";
+import { requireAdmin } from "@/lib/api-auth";
+import { apiConnectionSchema } from "@/lib/schemas";
 
 export async function GET() {
-  const session = await auth();
-  if (!session?.user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const adminError = await requireAdmin();
+  if (adminError) return adminError;
 
   const connections = await prisma.apiConnection.findMany({
     orderBy: { createdAt: "desc" },
@@ -17,12 +16,24 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const session = await auth();
-  if (!session?.user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const adminError = await requireAdmin();
+  if (adminError) return adminError;
+
+  let rawBody: unknown;
+  try {
+    rawBody = await request.json();
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
   }
 
-  const body = await request.json();
+  const parsed = apiConnectionSchema.safeParse(rawBody);
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: 'Validation failed', details: parsed.error.flatten().fieldErrors },
+      { status: 400 },
+    );
+  }
+  const body = parsed.data;
 
   try {
     const connection = await prisma.apiConnection.create({

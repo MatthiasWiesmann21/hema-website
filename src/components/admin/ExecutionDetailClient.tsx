@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 type StepLog = {
@@ -33,6 +34,7 @@ type Execution = {
 };
 
 export function ExecutionDetailClient({ id }: { id: string }) {
+  const router = useRouter();
   const [execution, setExecution] = useState<Execution | null>(null);
   const [loading, setLoading] = useState(true);
   const [retrying, setRetrying] = useState(false);
@@ -51,7 +53,7 @@ export function ExecutionDetailClient({ id }: { id: string }) {
       const res = await fetch(`/api/admin/executions/${id}/retry`, { method: "POST" });
       const data = await res.json();
       if (res.ok && data.executionId) {
-        window.location.href = `/admin/integrations/executions/${data.executionId}`;
+        router.push(`/admin/integrations/executions/${data.executionId}`);
       }
     } catch {
       // ignore

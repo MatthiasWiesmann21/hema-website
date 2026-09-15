@@ -3,14 +3,32 @@ import bcrypt from "bcryptjs";
 
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { passwordChangeSchema } from "@/lib/schemas";
 
 export async function PATCH(request: Request) {
   const session = await auth();
   if (!session?.user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+  if (session.user.role !== "admin") {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
 
-  const body = await request.json();
+  let rawBody: unknown;
+  try {
+    rawBody = await request.json();
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
+  }
+
+  const parsed = passwordChangeSchema.safeParse(rawBody);
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: 'Validation failed', details: parsed.error.flatten().fieldErrors },
+      { status: 400 },
+    );
+  }
+  const body = parsed.data;
   const { currentPassword, newPassword } = body;
 
   if (!currentPassword || !newPassword) {

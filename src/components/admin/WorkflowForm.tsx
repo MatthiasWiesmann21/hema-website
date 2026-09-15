@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 type Connection = {
@@ -15,10 +15,9 @@ type Step = {
   connectionId: string;
   method: string;
   path: string;
-  transformType: "mapping" | "template" | "code";
+  transformType: "mapping" | "template";
   fieldMappings: { source: string; target: string; default?: string }[];
   template: string;
-  code: string;
   headers: Record<string, string>;
 };
 
@@ -44,7 +43,7 @@ export function WorkflowForm({
   const [name, setName] = useState(initial?.name ?? "");
   const [description, setDescription] = useState(initial?.description ?? "");
   const [triggerType, setTriggerType] = useState(initial?.triggerType ?? "manual");
-  const [webhookKey, setWebhookKey] = useState(initial?.webhookKey ?? null);
+  const [webhookKey] = useState(initial?.webhookKey ?? null);
   const [cronExpression, setCronExpression] = useState(initial?.cronExpression ?? "");
   const [active, setActive] = useState(initial?.active ?? true);
   const [steps, setSteps] = useState<Step[]>(initial?.steps ?? []);
@@ -67,7 +66,6 @@ export function WorkflowForm({
         transformType: "mapping",
         fieldMappings: [],
         template: '{\n  "data": "{{trigger}}"\n}',
-        code: "return { data: input };",
         headers: {},
       },
     ]);
@@ -344,7 +342,7 @@ export function WorkflowForm({
               <div className="mt-3">
                 <label className={labelClass}>Transform Type</label>
                 <div className="flex gap-2">
-                  {(["mapping", "template", "code"] as const).map((type) => (
+                  {(["mapping", "template"] as const).map((type) => (
                     <button
                       key={type}
                       type="button"
@@ -355,7 +353,7 @@ export function WorkflowForm({
                           : "border border-brand-200 text-brand-900/60 hover:bg-brand-50"
                       }`}
                     >
-                      {type === "mapping" ? "Field Mapping" : type === "template" ? "JSON Template" : "Code"}
+                      {type === "mapping" ? "Field Mapping" : "JSON Template"}
                     </button>
                   ))}
                 </div>
@@ -437,19 +435,6 @@ export function WorkflowForm({
                     className={`${inputClass} font-mono text-xs`}
                     rows={6}
                     placeholder='{\n  "customerId": "{{ticket.customer}}",\n  "duration": {{ticket.duration}}\n}'
-                  />
-                </div>
-              )}
-
-              {step.transformType === "code" && (
-                <div className="mt-3">
-                  <label className={labelClass}>JavaScript Code (return the transformed object)</label>
-                  <textarea
-                    value={step.code}
-                    onChange={(e) => updateStep(index, { code: e.target.value })}
-                    className={`${inputClass} font-mono text-xs`}
-                    rows={6}
-                    placeholder={"// Available: input, previousOutput, trigger\nreturn { customerId: input.ticket.customer };"}
                   />
                 </div>
               )}

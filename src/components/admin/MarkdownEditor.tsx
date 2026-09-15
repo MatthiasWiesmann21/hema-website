@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import { marked } from "marked";
 
 import { cn } from "@/lib/utils";
+import { sanitizeHtml } from "@/lib/sanitize";
 
 type MarkdownEditorProps = {
   value: string;
@@ -22,7 +23,8 @@ export function MarkdownEditor({
 
   const html = useMemo(() => {
     try {
-      return marked.parse(value || "", { async: false }) as string;
+      const raw = marked.parse(value || "", { async: false }) as string;
+      return sanitizeHtml(raw);
     } catch {
       return "";
     }

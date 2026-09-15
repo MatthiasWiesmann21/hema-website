@@ -22,6 +22,11 @@ export async function middleware(request: Request) {
     return NextResponse.redirect(new URL("/admin/login", request.url));
   }
 
+  // Only allow admins to access admin routes
+  if (session.user.role !== "admin") {
+    return NextResponse.redirect(new URL("/admin/login", request.url));
+  }
+
   return NextResponse.next();
 }
 

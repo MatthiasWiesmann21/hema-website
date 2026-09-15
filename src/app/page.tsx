@@ -10,12 +10,14 @@ import { CountUp } from "@/components/ui/CountUp";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { getAllNews } from "@/lib/news";
+import { getLocations } from "@/lib/locations";
 import { getSiteSettings } from "@/lib/settings";
 import { services } from "@/data/services";
 
 export default async function Home() {
   const news = (await getAllNews()).slice(0, 3);
   const siteSettings = await getSiteSettings();
+  const locations = await getLocations();
 
   return (
     <>
@@ -61,7 +63,7 @@ export default async function Home() {
         <section className="border-b border-brand-100 bg-white">
           <Container className="grid grid-cols-2 gap-8 py-10 sm:grid-cols-4">
             {[
-              { value: "3", label: "Standorte" },
+              { value: String(locations.length), label: "Standorte" },
               { value: "25+", label: "Jahre Erfahrung" },
               { value: "14", label: "Partner" },
               { value: "100%", label: "Region Schwyz" },

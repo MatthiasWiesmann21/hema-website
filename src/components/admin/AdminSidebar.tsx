@@ -28,6 +28,7 @@ export function AdminSidebar() {
     // at the production origin, causing a cross-domain redirect/error).
     // We clear the session, then redirect client-side with a relative URL.
     await signOut({ redirect: false });
+    // eslint-disable-next-line @next/next/no-location-assign-relative-destination -- intentional full reload to clear session state
     window.location.href = "/admin/login";
   }
 

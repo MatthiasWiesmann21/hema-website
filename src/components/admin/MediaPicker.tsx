@@ -41,7 +41,9 @@ export function MediaPicker({
   }, []);
 
   useEffect(() => {
-    if (open) fetchAssets();
+    if (!open) return;
+    const id = setTimeout(fetchAssets, 0);
+    return () => clearTimeout(id);
   }, [open, fetchAssets]);
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
