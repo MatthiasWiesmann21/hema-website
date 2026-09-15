@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
@@ -94,6 +95,11 @@ export async function POST(request: Request) {
         ogImage: restoreData.ogImage ?? null,
       },
     });
+    // Revalidate all news-related cached pages.
+    revalidatePath("/");
+    revalidatePath("/neuigkeiten");
+    revalidatePath("/neuigkeiten/[slug]", "page");
+    revalidatePath("/sitemap.xml");
     return NextResponse.json(restored);
   }
 
@@ -128,6 +134,9 @@ export async function POST(request: Request) {
         ogImage: restoreData.ogImage ?? null,
       },
     });
+    // Revalidate all custom-page-related cached pages.
+    revalidatePath("/p/[slug]", "page");
+    revalidatePath("/sitemap.xml");
     return NextResponse.json(restored);
   }
 

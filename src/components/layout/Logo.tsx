@@ -19,8 +19,8 @@ export function Logo({
       <Image
         src="/images/hema-logo-200x200-Cleaned.bmp"
         alt="hema computersysteme ag"
-        width={72}
-        height={72}
+        width={86}
+        height={86}
       />
     </Link>
   );

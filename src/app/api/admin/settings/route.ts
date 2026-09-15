@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
@@ -41,6 +42,9 @@ export async function PATCH(request: Request) {
         social: body.social,
       },
     });
+    // Settings are used in the root layout (metadata, footer) and many pages,
+    // so revalidate the whole layout to refresh all pages.
+    revalidatePath("/", "layout");
     return NextResponse.json(settings);
   } catch (error) {
     return NextResponse.json(

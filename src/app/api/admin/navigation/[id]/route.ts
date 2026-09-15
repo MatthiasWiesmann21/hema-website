@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
@@ -27,6 +28,7 @@ export async function PATCH(
         parentId: body.parentId ?? null,
       },
     });
+    revalidatePath("/", "layout");
     return NextResponse.json(item);
   } catch (error) {
     return NextResponse.json(
@@ -49,6 +51,7 @@ export async function DELETE(
 
   try {
     await prisma.navItem.delete({ where: { id } });
+    revalidatePath("/", "layout");
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json(

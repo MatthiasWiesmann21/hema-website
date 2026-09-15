@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
@@ -39,6 +40,9 @@ export async function POST(request: Request) {
         sortOrder: body.sortOrder ?? (maxOrder._max.sortOrder ?? -1) + 1,
       },
     });
+    // Locations are rendered in the root layout (header) and on /kontakt
+    // and /support, so revalidate the whole layout to refresh all pages.
+    revalidatePath("/", "layout");
     return NextResponse.json(location);
   } catch (error) {
     return NextResponse.json(

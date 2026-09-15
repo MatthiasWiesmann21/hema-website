@@ -20,7 +20,7 @@ export default async function Home() {
   return (
     <>
       {/* Hero */}
-        <section className="relative isolate text-white min-h-140 max-h-180 pb-64 -mt-18 lg:-mt-28">
+        <section className="relative isolate overflow-hidden bg-brand-950 text-white min-h-140 max-h-180 pb-64 -mt-24 lg:-mt-32">
           <Image
             src="/images/K1600_Laptop_01.22.jpg"
             alt=""
@@ -34,7 +34,7 @@ export default async function Home() {
             aria-hidden
             className="absolute -top-24 -right-16 size-80 rounded-full bg-accent-500/25 blur-3xl"
           />
-          <Container className="relative grid gap-12 py-20 lg:grid-cols-[1.1fr_1fr] lg:items-center lg:py-36">
+          <Container className="relative grid gap-12 pt-24 pb-20 lg:grid-cols-[1.1fr_1fr] lg:items-center lg:py-36">
             <div>
               <h1 className="mt-6 text-4xl font-semibold tracking-tight text-white sm:text-5xl lg:text-6xl">
                 Ihr IT Specialist

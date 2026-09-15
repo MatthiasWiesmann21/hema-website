@@ -13,7 +13,7 @@ import { getSiteSettings } from "@/lib/settings";
 export const metadata: Metadata = {
   title: "Kontakt",
   description:
-    "hema computersysteme ag – Standorte Ibach, Muotathal und Zug. Telefon, E-Mail und Adressen auf einen Blick.",
+    "hema computersysteme ag – Standorte in der Region Schwyz. Telefon, E-Mail und Adressen auf einen Blick.",
 };
 
 export default async function KontaktPage() {
@@ -24,15 +24,15 @@ export default async function KontaktPage() {
       <PageHero
         eyebrow="Kontakt"
         title="Wir sind für Sie da"
-        description="Drei Standorte in der Region – rufen Sie an oder schreiben Sie uns eine E-Mail. Wir melden uns rasch zurück."
+        description="Standorte in der Region – rufen Sie an oder schreiben Sie uns eine E-Mail. Wir melden uns rasch zurück."
         breadcrumb={[{ label: "Kontakt", href: "/kontakt" }]}
         bgImage="/images/Schwyz.png"
       />
 
       <Section>
-        <div className="grid gap-6 lg:grid-cols-3">
+        <div className="flex flex-wrap justify-center gap-6">
           {locations.map((location) => (
-            <Card key={location.city} className="flex flex-col gap-5 p-7">
+            <Card key={location.city} className="flex w-full flex-col gap-5 p-7 sm:w-80 lg:w-96">
               <div className="flex items-start justify-between gap-3">
                 <h2 className="text-2xl font-semibold">
                   Standort {location.city}

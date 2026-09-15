@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
@@ -41,6 +42,7 @@ export async function POST(request: Request) {
         parentId: body.parentId || null,
       },
     });
+    revalidatePath("/", "layout");
     return NextResponse.json(item);
   } catch (error) {
     return NextResponse.json(

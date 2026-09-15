@@ -22,7 +22,7 @@ export function PageHero({
   className?: string;
 }) {
   return (
-    <section className="relative isolate -mt-18 overflow-hidden bg-linear-to-br from-brand-900 via-brand-800 to-brand-950 text-white lg:-mt-28">
+    <section className="relative isolate -mt-24 overflow-hidden bg-linear-to-br from-brand-900 via-brand-800 to-brand-950 text-white lg:-mt-32">
       {bgImage ? (
         <>
           <Image

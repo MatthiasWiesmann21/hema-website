@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
@@ -30,6 +31,12 @@ export async function POST(request: Request) {
         ogImage: body.ogImage || null,
       },
     });
+    // News appears on the homepage, /neuigkeiten list, individual post pages,
+    // and the sitemap — revalidate all of them.
+    revalidatePath("/");
+    revalidatePath("/neuigkeiten");
+    revalidatePath("/neuigkeiten/[slug]", "page");
+    revalidatePath("/sitemap.xml");
     return NextResponse.json(post);
   } catch (error) {
     return NextResponse.json(

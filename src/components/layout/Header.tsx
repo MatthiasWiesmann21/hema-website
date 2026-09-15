@@ -77,7 +77,7 @@ export function Header({
             : "border-brand-100 bg-white/90 shadow-sm backdrop-blur-md",
         )}
       >
-        <Container className="flex h-20 items-center justify-between gap-4">
+        <Container className="flex h-24 items-center justify-between gap-4">
           <Logo />
 
           <nav aria-label="Hauptnavigation" className="hidden lg:block">
@@ -190,7 +190,7 @@ export function Header({
       </div>
 
       {open ? (
-        <div className="max-h-[calc(100dvh-4.5rem)] overflow-y-auto border-b border-brand-100 bg-white lg:hidden">
+        <div className="max-h-[calc(100dvh-5rem)] overflow-y-auto border-b border-brand-100 bg-white lg:hidden">
           <Container className="flex flex-col gap-1 py-5">
             {navItems.map((item) =>
               item.children && item.children.length > 0 ? (

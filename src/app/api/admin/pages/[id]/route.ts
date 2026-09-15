@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
@@ -44,6 +45,9 @@ export async function PATCH(
         ogImage: body.ogImage || null,
       },
     });
+    // Custom pages are served at /p/[slug] and listed in the sitemap.
+    revalidatePath("/p/[slug]", "page");
+    revalidatePath("/sitemap.xml");
     return NextResponse.json(page);
   } catch (error) {
     return NextResponse.json(
@@ -66,6 +70,9 @@ export async function DELETE(
 
   try {
     await prisma.customPage.delete({ where: { id } });
+    // Custom pages are served at /p/[slug] and listed in the sitemap.
+    revalidatePath("/p/[slug]", "page");
+    revalidatePath("/sitemap.xml");
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json(
