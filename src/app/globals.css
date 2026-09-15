@@ -14,9 +14,9 @@
   --color-brand-950: #1c1238;
 
   /* Accent – magenta / pink */
-  --color-accent-300: #f5658a;
-  --color-accent-500: #e8135f;
-  --color-accent-600: #c80f52;
+  --color-accent-300: #ce255b;
+  --color-accent-500: #ce255b;
+  --color-accent-600: #ce255b;
 
   /* Fonts */
   --font-sans: var(--font-geist-sans);

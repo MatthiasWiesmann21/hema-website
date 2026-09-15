@@ -41,9 +41,10 @@ export default function TeamPage() {
               <ImagePlaceholder
                 src={member.image}
                 label={member.name}
-                aspect="4/3"
+                aspect="3/4"
                 rounded="rounded-none"
                 tone="neutral"
+                objectPosition="top"
               />
               <div className="flex flex-col gap-2 p-6">
                 <h2 className="text-lg font-semibold">{member.name}</h2>

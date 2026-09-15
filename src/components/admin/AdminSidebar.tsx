@@ -22,6 +22,15 @@ const navItems = [
 export function AdminSidebar() {
   const pathname = usePathname();
 
+  async function handleSignOut() {
+    // Use `redirect: false` so NextAuth doesn't resolve the callbackUrl
+    // server-side against NEXTAUTH_URL (which on Vercel previews points
+    // at the production origin, causing a cross-domain redirect/error).
+    // We clear the session, then redirect client-side with a relative URL.
+    await signOut({ redirect: false });
+    window.location.href = "/admin/login";
+  }
+
   return (
     <aside className="flex w-60 shrink-0 flex-col border-r border-brand-100 bg-white">
       <div className="flex h-16 items-center border-b border-brand-100 px-6">
@@ -56,7 +65,7 @@ export function AdminSidebar() {
       </nav>
       <div className="border-t border-brand-100 p-4">
         <button
-          onClick={() => signOut({ callbackUrl: "/admin/login" })}
+          onClick={handleSignOut}
           className="w-full rounded-lg px-4 py-2.5 text-left text-sm font-medium text-brand-900/70 transition-colors hover:bg-red-50 hover:text-red-600"
         >
           Sign out

@@ -47,12 +47,12 @@ export function Header({
             {locations.slice(0, 2).map((location) => (
               <span key={location.city} className="flex items-center gap-2">
                 <PinIcon className="size-3.5 text-white/60" />
-                <span className="text-white/80">
+                <span className="font-medium text-white/80">
                   {location.street}, {location.zip}
                 </span>
                 <a
                   href={location.phoneHref}
-                  className="font-medium text-white transition-colors hover:text-accent-300"
+                  className="font-medium text-white/80 "
                 >
                   {location.phone}
                 </a>
@@ -61,10 +61,10 @@ export function Header({
           </div>
           <a
             href={`mailto:${siteSettings.email}`}
-            className="flex items-center gap-2 font-medium transition-colors hover:text-accent-300"
+            className="flex items-center gap-2 font-medium"
           >
-            <MailIcon className="size-3.5 text-white/60" />
-            {siteSettings.email}
+            <MailIcon className="size-3.5 text-white/80" />
+            <p className="text-white/80 font-medium">{siteSettings.email}</p>
           </a>
         </Container>
       </div>

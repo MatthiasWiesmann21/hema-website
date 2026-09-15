@@ -7,6 +7,7 @@ const aspects = {
   "4/3": "aspect-4/3",
   "3/2": "aspect-3/2",
   "1/1": "aspect-square",
+  "3/4": "aspect-3/4",
   none: "",
 } as const;
 
@@ -20,6 +21,8 @@ type ImagePlaceholderProps = {
   tone?: "brand" | "accent" | "neutral";
   priority?: boolean;
   rounded?: string;
+  /** CSS object-position value, e.g. "top" to bias portrait crops toward the face. */
+  objectPosition?: string;
 };
 
 const tones = {
@@ -36,6 +39,7 @@ export function ImagePlaceholder({
   tone = "brand",
   priority = false,
   rounded = "rounded-2xl",
+  objectPosition,
 }: ImagePlaceholderProps) {
   return (
     <div
@@ -55,6 +59,7 @@ export function ImagePlaceholder({
           priority={priority}
           sizes="(min-width: 1024px) 50vw, 100vw"
           className="object-cover"
+          style={objectPosition ? { objectPosition } : undefined}
         />
       ) : (
         <>

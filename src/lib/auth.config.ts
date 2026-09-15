@@ -1,6 +1,10 @@
 import type { NextAuthConfig } from "next-auth";
 
 export const authConfig: NextAuthConfig = {
+  // Trust the request host on Vercel preview deployments so that auth
+  // redirects resolve against the current deployment URL rather than
+  // a hardcoded NEXTAUTH_URL pointing at production.
+  trustHost: true,
   session: { strategy: "jwt" },
   pages: {
     signIn: "/admin/login",

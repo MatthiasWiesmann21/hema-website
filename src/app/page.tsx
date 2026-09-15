@@ -36,10 +36,6 @@ export default async function Home() {
           />
           <Container className="relative grid gap-12 py-20 lg:grid-cols-[1.1fr_1fr] lg:items-center lg:py-36">
             <div>
-              <span className="inline-flex items-center gap-2 text-xs font-semibold tracking-[0.18em] text-accent-300 uppercase">
-                <span aria-hidden className="h-px w-6 bg-accent-300" />
-                {siteSettings.tagline}
-              </span>
               <h1 className="mt-6 text-4xl font-semibold tracking-tight text-white sm:text-5xl lg:text-6xl">
                 Ihr IT Specialist
                 <br />
