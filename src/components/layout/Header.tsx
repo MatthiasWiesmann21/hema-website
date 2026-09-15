@@ -46,7 +46,7 @@ export function Header({
           <div className="flex items-center gap-6">
             {locations.slice(0, 2).map((location) => (
               <span key={location.city} className="flex items-center gap-2">
-                <PinIcon className="size-3.5 text-white/60" />
+                <PinIcon className="size-4 text-white/60" />
                 <span className="font-medium text-white/80">
                   {location.street}, {location.zip}
                 </span>
@@ -63,7 +63,7 @@ export function Header({
             href={`mailto:${siteSettings.email}`}
             className="flex items-center gap-2 font-medium"
           >
-            <MailIcon className="size-3.5 text-white/80" />
+            <MailIcon className="size-4 text-white/80" />
             <p className="text-white/80 font-medium">{siteSettings.email}</p>
           </a>
         </Container>
