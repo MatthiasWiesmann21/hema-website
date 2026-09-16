@@ -130,13 +130,7 @@ async function main() {
       data: { location: "header", label: "Kontakt", href: "/kontakt", external: false, sortOrder: 3 },
     });
     await prisma.navItem.create({
-      data: {
-        location: "header",
-        label: "Support",
-        href: "https://lb3.pcvisit.de/v1/hosted/jumplink?func=download&topic=guestSetup&destname=pcvisit_Kunden-Modul&os=osWin32",
-        external: true,
-        sortOrder: 4,
-      },
+      data: { location: "header", label: "Support", href: "/support", external: false, sortOrder: 4 },
     });
 
     // Header children for Leistungen

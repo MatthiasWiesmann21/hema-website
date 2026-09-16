@@ -83,11 +83,7 @@ export const mainNav: NavItem[] = [
     ],
   },
   { label: "Kontakt", href: "/kontakt" },
-  {
-    label: "Support",
-    href: "https://lb3.pcvisit.de/v1/hosted/jumplink?func=download&topic=guestSetup&destname=pcvisit_Kunden-Modul&os=osWin32",
-    external: true,
-  },
+  { label: "Support", href: "/support" },
 ];
 
 export type RemoteTool = {
@@ -109,7 +105,7 @@ export const remoteTools: RemoteTool[] = [
   {
     name: "PC Visit",
     description:
-      "Das pcvisit Kunden-Modul muss nicht installiert werden. Einfach herunterladen, ausführen und die angezeigte Verbindungsnummer nennen.",
+      "Das pcvisit Kunden-Modul muss nicht installiert werden. Einfach herunterladen, ausführen und die von uns gennante Verbindungsnummer (ID) eingeben.",
     href: "https://lb3.pcvisit.de/v1/hosted/jumplink?func=download&topic=guestSetup&destname=pcvisit_Kunden-Modul&os=osWin32",
     platform: "Windows",
   },

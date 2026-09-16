@@ -41,7 +41,7 @@ export const locationSchema = z.object({
 // ─── Navigation item ────────────────────────────────────────────────────────
 
 export const navItemSchema = z.object({
-  location: safeString(50),
+  location: safeString(50).optional(),
   section: safeString(100).optional().nullable(),
   label: safeString(200),
   href: safeString(2048),
@@ -50,8 +50,18 @@ export const navItemSchema = z.object({
   parentId: safeString(50).optional().nullable(),
 });
 
+export const navItemCreateSchema = navItemSchema.extend({
+  location: safeString(50),
+});
+
 export const navReorderSchema = z.object({
-  items: z.array(z.object({ id: safeString(50), sortOrder: z.number().int() })),
+  items: z.array(
+    z.object({
+      id: safeString(50),
+      sortOrder: z.number().int(),
+      parentId: safeString(50).nullable().optional(),
+    }),
+  ),
 });
 
 // ─── Site settings ──────────────────────────────────────────────────────────

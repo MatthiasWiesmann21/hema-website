@@ -3,7 +3,7 @@ import { revalidatePath } from "next/cache";
 
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/api-auth";
-import { navItemSchema } from "@/lib/schemas";
+import { navItemCreateSchema } from "@/lib/schemas";
 
 export async function GET() {
   const adminError = await requireAdmin();
@@ -27,7 +27,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
   }
 
-  const parsed = navItemSchema.safeParse(rawBody);
+  const parsed = navItemCreateSchema.safeParse(rawBody);
   if (!parsed.success) {
     return NextResponse.json(
       { error: 'Validation failed', details: parsed.error.flatten().fieldErrors },
