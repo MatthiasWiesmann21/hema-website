@@ -1,7 +1,7 @@
 import { CallIcon, MailIcon } from "@/components/icons";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
-import { locations } from "@/data/site";
+import { getLocations } from "@/lib/locations";
 import { getSiteSettings } from "@/lib/settings";
 
 export async function ContactCta({
@@ -12,6 +12,7 @@ export async function ContactCta({
   description?: string;
 }) {
   const siteSettings = await getSiteSettings();
+  const locations = await getLocations();
   return (
     <section className="py-16 sm:py-20">
       <Container>
