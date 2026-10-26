@@ -90,6 +90,7 @@ export type RemoteTool = {
   name: string;
   description: string;
   href: string;
+  macHref?: string;
   platform: string;
 };
 
@@ -107,6 +108,8 @@ export const remoteTools: RemoteTool[] = [
     description:
       "Das pcvisit Kunden-Modul muss nicht installiert werden. Einfach herunterladen, ausführen und die von uns gennante Verbindungsnummer (ID) eingeben.",
     href: "https://lb3.pcvisit.de/v1/hosted/jumplink?func=download&topic=guestSetup&destname=pcvisit_Kunden-Modul&os=osWin32",
+    macHref:
+      "https://lb3.pcvisit.de/v1/hosted/jumplink?func=download&topic=guestSetup&destname=pcvisit_Kunden-Modul&os=osMacOSx",
     platform: "Windows",
   },
   {

@@ -1,17 +1,13 @@
 import type { Metadata } from "next";
 
 import {
-  AppleIcon,
-  ArrowRightIcon,
   CallIcon,
-  DownloadIcon,
   MailIcon,
   ShieldIcon,
   TouchIcon,
-  WindowsIcon,
 } from "@/components/icons";
 import { PageHero } from "@/components/layout/PageHero";
-import { Button } from "@/components/ui/Button";
+import { PcVisitDownload } from "@/components/sections/PcVisitDownload";
 import { Card } from "@/components/ui/Card";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -66,16 +62,11 @@ export default async function SupportPage() {
               title="pcvisit Kunden-Modul"
               description={pcVisit.description}
             />
-            <div className="mt-8 flex flex-wrap items-center gap-4">
-              <Button href={pcVisit.href} size="lg">
-                <DownloadIcon className="size-5" />
-                Download
-              </Button>
-              <span className="flex items-center gap-2 rounded-full border border-brand-200 bg-white px-4 py-2 shadow-sm">
-                <WindowsIcon className="size-5 text-brand-700" />
-                <span className="h-4 w-px bg-brand-200" />
-                <AppleIcon className="size-5 text-brand-700" />
-              </span>
+            <div className="mt-8">
+              <PcVisitDownload
+                windowsHref={pcVisit.href}
+                macHref={pcVisit.macHref!}
+              />
             </div>
             <p className="mt-6 text-sm leading-relaxed text-brand-950/70">
               Nach dem Start geben wir Ihnen am Telefon eine Verbindungsnummer,
